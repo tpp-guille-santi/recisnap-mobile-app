@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
+import 'package:recyclingapp/screens/camera.dart';
 import 'package:recyclingapp/widgets/homepagebutton.dart';
 
 class Homepage extends StatelessWidget {
@@ -18,15 +19,19 @@ class Homepage extends StatelessWidget {
               Image.network(
                   'https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/8/88/G.svg/revision/latest/scale-to-width-down/200?cb=20160125094907'),
               HomepageButton(
-                onPressed: null,
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return Camera();
+                  }));
+                },
                 buttonText: 'Sacar foto',
               ),
               HomepageButton(
-                onPressed: null,
+                onPressed: () {},
                 buttonText: 'Ver materiales',
               ),
               HomepageButton(
-                onPressed: null,
+                onPressed: () {},
                 buttonText: '¿Por que reciclar?',
               ),
             ],

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/screens/homepage.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
 }
 

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
-import 'package:recyclingapp/screens/homepage.dart';
 
 class HomepageButton extends StatelessWidget {
-  final Function onPressed;
+  final Function() onPressed;
   final String buttonText;
 
-  HomepageButton({this.onPressed, this.buttonText});
+  HomepageButton({required this.onPressed, required this.buttonText});
 
   @override
   Widget build(BuildContext context) {
