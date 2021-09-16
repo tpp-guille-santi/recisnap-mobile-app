@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/screens/camera.dart';
+import 'package:recyclingapp/screens/materialsCatalogue.dart';
 import 'package:recyclingapp/widgets/homepagebutton.dart';
 
 class Homepage extends StatelessWidget {
@@ -27,7 +28,11 @@ class Homepage extends StatelessWidget {
                 buttonText: 'Sacar foto',
               ),
               HomepageButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return MaterialsCatalogue();
+                  }));
+                },
                 buttonText: 'Ver materiales',
               ),
               HomepageButton(
