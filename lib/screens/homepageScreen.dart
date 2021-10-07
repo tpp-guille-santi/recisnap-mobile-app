@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
-import 'package:recyclingapp/screens/camera.dart';
-import 'package:recyclingapp/screens/materialsCatalogue.dart';
+import 'package:recyclingapp/screens/cameraScreen.dart';
+import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/widgets/homepagebutton.dart';
 
 class Homepage extends StatelessWidget {
