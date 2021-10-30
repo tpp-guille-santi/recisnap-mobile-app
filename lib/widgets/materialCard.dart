@@ -12,7 +12,7 @@ class MaterialCard extends StatelessWidget {
     return Card(
       child: InkWell(
         splashColor: Colors.greenAccent,
-        onTap: () {´´
+        onTap: () {
           print('Card tapped.');
         },
         child: SizedBox(
