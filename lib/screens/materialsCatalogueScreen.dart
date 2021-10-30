@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/screens/materialInfoScreen.dart';
 import 'package:recyclingapp/widgets/homepagebutton.dart';
+import 'package:recyclingapp/widgets/materialCard.dart';
 import 'package:recyclingapp/widgets/recyclingMaterialButton.dart';
 
 class MaterialsCatalogue extends StatelessWidget {
@@ -24,50 +25,18 @@ class MaterialsCatalogue extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  RecyclingMaterialButton(
-                    buttonText: 'Plástico',
-                    onPress: () {
-                      Navigator.pushNamed(context, '/plasticInformationScreen');
-                    },
+                  MaterialCard(
+                    title: 'title',
+                    body: 'body',
                   ),
-                  RecyclingMaterialButton(
-                    buttonText: 'Vidrio',
-                    onPress: () {
-                      Navigator.pushNamed(context, '/glassInformationScreen');
-                    },
+                  MaterialCard(
+                    title: 'title2',
+                    body: 'body2',
                   ),
-                  RecyclingMaterialButton(
-                    buttonText: 'Cartón',
-                    onPress: () {
-                      Navigator.pushNamed(
-                          context, '/cardboardInformationScreen');
-                    },
-                  ),
-                  RecyclingMaterialButton(
-                    buttonText: 'Pilas',
-                    onPress: () {
-                      Navigator.pushNamed(
-                          context, '/batteriesInformationScreen');
-                    },
-                  ),
-                  RecyclingMaterialButton(
-                    buttonText: 'Papel',
-                    onPress: () {
-                      Navigator.pushNamed(context, '/paperInformationScreen');
-                    },
-                  ),
-                  RecyclingMaterialButton(
-                    buttonText: 'Metal',
-                    onPress: () {
-                      Navigator.pushNamed(context, '/metalInformationScreen');
-                    },
-                  ),
-                  RecyclingMaterialButton(
-                    buttonText: 'Basura',
-                    onPress: () {
-                      Navigator.pushNamed(context, '/wasteInformationScreen');
-                    },
-                  ),
+                  MaterialCard(
+                    title: 'title3',
+                    body: 'body3',
+                  )
                 ],
               ),
             ),
