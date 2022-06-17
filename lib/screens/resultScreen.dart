@@ -5,11 +5,20 @@ class ResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
-    print(arguments);
     return Container(
-      child: TextButton(
-          onPressed: () => {Navigator.pop(context), '2'},
-          child: Text(arguments['test'])),
+      child: Column(
+        children: [
+          TextButton(
+            onPressed: () => {Navigator.pop(context, arguments['cameraIndex'])},
+            child: Text('Camara'),
+          ),
+          TextButton(
+            onPressed: () =>
+                {Navigator.pop(context, arguments['catalogueIndex'])},
+            child: Text('Catalogo'),
+          ),
+        ],
+      ),
     );
   }
 }

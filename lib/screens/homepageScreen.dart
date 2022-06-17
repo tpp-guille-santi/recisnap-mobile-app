@@ -83,10 +83,10 @@ class _HomepageState extends State<Homepage> {
               final result = await Navigator.pushNamed(
                 context,
                 '/results',
-                arguments: {'test': 't'},
+                arguments: {'cameraIndex': 1, 'catalogueIndex': 2},
               );
-
               print("Returns: $result");
+              _onItemTapped(result as int);
             } catch (e) {
               // If an error occurs, log the error to the console.
               print(e);
