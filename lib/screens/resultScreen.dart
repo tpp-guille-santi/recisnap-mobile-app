@@ -8,7 +8,7 @@ class ResultScreen extends StatelessWidget {
     print(arguments);
     return Container(
       child: TextButton(
-          onPressed: () => {Navigator.pop(context)},
+          onPressed: () => {Navigator.pop(context), '2'},
           child: Text(arguments['test'])),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:recyclingapp/consts.dart';
 
 class MaterialCard extends StatelessWidget {
   String title;
