@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
-import 'package:recyclingapp/screens/materialInfoScreen.dart';
-import 'package:recyclingapp/widgets/homepagebutton.dart';
 import 'package:recyclingapp/widgets/materialCard.dart';
-import 'package:recyclingapp/widgets/recyclingMaterialButton.dart';
 
 class MaterialsCatalogue extends StatelessWidget {
   @override

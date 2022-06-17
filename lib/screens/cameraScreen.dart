@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:recyclingapp/screens/resultScreen.dart';
 
 class Camera extends StatefulWidget {
   @override
@@ -65,7 +66,13 @@ class _CameraState extends State<Camera> {
           try {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
-            print(image);
+            //Mandar a server
+            //Pasar a resultado
+            print("Test");
+            print(image.path);
+            final result = await Navigator.pushNamed(context, '/results',
+                arguments: {'test': 't'});
+            print(result);
           } catch (e) {
             // If an error occurs, log the error to the console.
             print(e);
