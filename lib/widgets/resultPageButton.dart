@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
 
-class HomepageButton extends StatelessWidget {
+class ResultPageButton extends StatelessWidget {
   final Function() onPressed;
   final String buttonText;
 
-  HomepageButton({required this.onPressed, required this.buttonText});
+  ResultPageButton({required this.onPressed, required this.buttonText});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(5.0),
       child: TextButton(
         onPressed: onPressed,
         child: Text(
@@ -21,7 +21,6 @@ class HomepageButton extends StatelessWidget {
           ),
         ),
         style: TextButton.styleFrom(
-          minimumSize: Size(double.infinity, 30),
           backgroundColor: DARK_GREEN_COLOR,
         ),
       ),
