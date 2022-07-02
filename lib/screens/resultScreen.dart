@@ -36,10 +36,10 @@ class ResultScreen extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'TU RESULTADO',
+              'TU RESULTADO: ' + arguments['material'],
               style: TEXT_TITLE_THEME,
             ),
-            Text('Aca va la informacion dependiendo del resultado'),
+            Text('Aca va la informacion: ' + arguments['instructions']),
           ],
         ),
       ),

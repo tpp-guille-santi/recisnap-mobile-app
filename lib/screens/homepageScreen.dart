@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
+import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _HomepageState extends State<Homepage> {
     ),
     MaterialsCatalogue()
   ];
+  NeuralNetworkConnector cnnConnector = NeuralNetworkConnector();
 
   @override
   void initState() {
@@ -76,14 +78,19 @@ class _HomepageState extends State<Homepage> {
               await _initializeControllerFuture;
               final image = await _controller.takePicture();
               //Mandar a server
+              var response = await cnnConnector.cataloguePicture(image.path);
               //Pasar a resultado
-              print("Test");
-              print("Ready: $_showFab");
-              print(image.path);
+              var material = response['material'];
+              var instructions = response['information'];
               final result = await Navigator.pushNamed(
                 context,
                 '/results',
-                arguments: {'cameraIndex': 1, 'catalogueIndex': 2},
+                arguments: {
+                  'material': material,
+                  'instructions': instructions,
+                  'cameraIndex': 1,
+                  'catalogueIndex': 2
+                },
               );
               print("Returns: $result");
               _onItemTapped(result as int);

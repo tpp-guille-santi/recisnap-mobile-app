@@ -98,6 +98,18 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "http",
+      "rootUri": "file:///Users/gczop/Cursos/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.13.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "http_parser",
+      "rootUri": "file:///Users/gczop/Cursos/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-4.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "matcher",
       "rootUri": "file:///Users/gczop/Cursos/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.10",
       "packageUri": "lib/",
@@ -254,7 +266,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-09-03T20:48:08.820230Z",
+  "generated": "2022-07-01T22:53:34.013373Z",
   "generator": "pub",
   "generatorVersion": "2.12.2"
 }
