@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/widgets/resultPageButton.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ResultScreen extends StatelessWidget {
   @override
@@ -33,15 +34,7 @@ class ResultScreen extends StatelessWidget {
           right: 20.0,
           top: 40.0,
         ),
-        child: Column(
-          children: [
-            Text(
-              'TU RESULTADO: ' + arguments['material'],
-              style: TEXT_TITLE_THEME,
-            ),
-            Text('Aca va la informacion: ' + arguments['instructions']),
-          ],
-        ),
+        child: Markdown(data: arguments["instructions"]),
       ),
     );
   }

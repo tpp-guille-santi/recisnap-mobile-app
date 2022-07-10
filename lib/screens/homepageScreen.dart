@@ -79,7 +79,6 @@ class _HomepageState extends State<Homepage> {
             try {
               await _initializeControllerFuture;
               final image = await _controller.takePicture();
-              print(image.path);
               //Mandar a server
               var response = await cnnConnector.cataloguePicture(image.path);
               var material = response['material'];
@@ -90,7 +89,6 @@ class _HomepageState extends State<Homepage> {
                 context,
                 '/results',
                 arguments: {
-                  'material': material,
                   'instructions': instructions,
                   'cameraIndex': 1,
                   'catalogueIndex': 2
