@@ -77,9 +77,12 @@ class _HomepageState extends State<Homepage> {
             try {
               await _initializeControllerFuture;
               final image = await _controller.takePicture();
+              print(image.path);
               //Mandar a server
               var response = await cnnConnector.cataloguePicture(image.path);
               //Pasar a resultado
+              print("response");
+              print(response);
               var material = response['material'];
               var instructions = response['information'];
               final result = await Navigator.pushNamed(
