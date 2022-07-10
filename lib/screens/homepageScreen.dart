@@ -6,6 +6,7 @@ import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
+import 'package:recyclingapp/utils/markdownManager.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -27,6 +28,7 @@ class _HomepageState extends State<Homepage> {
     MaterialsCatalogue()
   ];
   NeuralNetworkConnector cnnConnector = NeuralNetworkConnector();
+  MarkdownManager markdownManager = new MarkdownManager();
 
   @override
   void initState() {
@@ -80,11 +82,10 @@ class _HomepageState extends State<Homepage> {
               print(image.path);
               //Mandar a server
               var response = await cnnConnector.cataloguePicture(image.path);
-              //Pasar a resultado
-              print("response");
-              print(response);
               var material = response['material'];
-              var instructions = response['information'];
+              var instructions =
+                  await markdownManager.getInstructions(material);
+              //Pasar a resultado
               final result = await Navigator.pushNamed(
                 context,
                 '/results',
