@@ -24,19 +24,19 @@
       <change beforePath="$PROJECT_DIR$/.dart_tool/package_config_subset" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config_subset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/homepageScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/homepageScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/resultScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/resultScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/materialsCatalogueScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/materialsCatalogueScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/httpConnector.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/httpConnector.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/materialCard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/materialCard.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[ZY3229MFFF]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -102,30 +102,30 @@
       <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state x="100" y="123" width="1240" height="677" key="AVDManager/-263.-1080.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657465849281" />
-    <state width="1398" height="231" key="GridCell.Tab.0.bottom" timestamp="1657476022865">
+    <state width="1398" height="231" key="GridCell.Tab.0.bottom" timestamp="1657583830081">
       <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state width="1398" height="231" key="GridCell.Tab.0.bottom/-1920.0.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657464925882" />
-    <state width="1398" height="231" key="GridCell.Tab.0.bottom/-263.-1080.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657476022865" />
-    <state width="1398" height="231" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1656715160932" />
-    <state width="1398" height="231" key="GridCell.Tab.0.center" timestamp="1657476022865">
+    <state width="1398" height="231" key="GridCell.Tab.0.bottom/-263.-1080.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657480674177" />
+    <state width="1398" height="231" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1657583830081" />
+    <state width="1398" height="231" key="GridCell.Tab.0.center" timestamp="1657583830080">
       <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state width="1398" height="231" key="GridCell.Tab.0.center/-1920.0.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657464925880" />
-    <state width="1398" height="231" key="GridCell.Tab.0.center/-263.-1080.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657476022865" />
-    <state width="1398" height="231" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1656715160931" />
-    <state width="1398" height="231" key="GridCell.Tab.0.left" timestamp="1657476022864">
+    <state width="1398" height="231" key="GridCell.Tab.0.center/-263.-1080.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657480674176" />
+    <state width="1398" height="231" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1657583830080" />
+    <state width="1398" height="231" key="GridCell.Tab.0.left" timestamp="1657583830080">
       <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state width="1398" height="231" key="GridCell.Tab.0.left/-1920.0.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657464925878" />
-    <state width="1398" height="231" key="GridCell.Tab.0.left/-263.-1080.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657476022864" />
-    <state width="1398" height="231" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1656715160930" />
-    <state width="1398" height="231" key="GridCell.Tab.0.right" timestamp="1657476022865">
+    <state width="1398" height="231" key="GridCell.Tab.0.left/-263.-1080.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657480674176" />
+    <state width="1398" height="231" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1657583830080" />
+    <state width="1398" height="231" key="GridCell.Tab.0.right" timestamp="1657583830081">
       <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state width="1398" height="231" key="GridCell.Tab.0.right/-1920.0.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657464925881" />
-    <state width="1398" height="231" key="GridCell.Tab.0.right/-263.-1080.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657476022865" />
-    <state width="1398" height="231" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1656715160931" />
+    <state width="1398" height="231" key="GridCell.Tab.0.right/-263.-1080.1920.1080/0.23.1440.877@0.23.1440.877" timestamp="1657480674176" />
+    <state width="1398" height="231" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1657583830081" />
     <state x="229" y="100" key="SettingsEditor" timestamp="1657475489987">
       <screen x="0" y="23" width="1440" height="877" />
     </state>
