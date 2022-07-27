@@ -44,4 +44,16 @@ class HttpConnector {
       print(response.statusCode);
     }
   }
+
+  getMaterialsList() async {
+    http.Response response = await http.get(
+      Uri.https('peaceful-refuge-34158.herokuapp.com', '/materials'),
+    );
+    if (response.statusCode == 200) {
+      String data = response.body;
+      return data;
+    } else {
+      print(response.statusCode);
+    }
+  }
 }

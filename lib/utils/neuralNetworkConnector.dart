@@ -9,4 +9,12 @@ class NeuralNetworkConnector {
     var response = await networkHelper.getData(File(imagePath));
     return response;
   }
+
+  Future<String> getMaterialList() async {
+    HttpConnector networkHelper = HttpConnector();
+
+    var response = await networkHelper.getMaterialsList();
+    print(response);
+    return response;
+  }
 }

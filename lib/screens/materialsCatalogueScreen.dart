@@ -1,8 +1,35 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
+import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:recyclingapp/widgets/materialCard.dart';
 
 class MaterialsCatalogue extends StatelessWidget {
+  final NeuralNetworkConnector manager = new NeuralNetworkConnector();
+
+  Widget getList() {
+    return FutureBuilder(
+      future: manager.getMaterialList(),
+      builder: (context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text('Please wait its loading...');
+        }
+
+        List<dynamic> result = jsonDecode(snapshot.data!);
+        return ListView.builder(
+            itemCount: result.length,
+            itemBuilder: (context, index) {
+              return MaterialCard(
+                  title: result[index]['material'],
+                  body: 'body',
+                  image: Image.network(
+                      'https://raw.githubusercontent.com/tpp-guille-santi/materials/main/iconos/${result[index]['material']}.png'));
+            });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,48 +47,7 @@ class MaterialsCatalogue extends StatelessWidget {
               style: TEXT_TITLE_THEME,
             ),
             Expanded(
-              child: ListView(
-                children: [
-                  MaterialCard(
-                      title: 'Plástico',
-                      body: 'body',
-                      image: Image.network(
-                          'https://raw.githubusercontent.com/tpp-guille-santi/materials/main/iconos/plastic.png')),
-                  MaterialCard(
-                    title: 'Vidrio',
-                    body: 'body2',
-                    image: Image.network(
-                        'https://raw.githubusercontent.com/tpp-guille-santi/materials/main/iconos/glass.png'),
-                  ),
-                  MaterialCard(
-                    title: 'Cartón',
-                    body: 'body3',
-                    image: Image.network(
-                        'https://raw.githubusercontent.com/tpp-guille-santi/materials/main/iconos/cardboard.png'),
-                  ),
-                  MaterialCard(
-                      title: 'Pilas',
-                      body: 'body3',
-                      image: Image.network(
-                        'https://raw.githubusercontent.com/tpp-guille-santi/materials/main/iconos/batteries.png',
-                      )),
-                  MaterialCard(
-                      title: 'Papel',
-                      body: 'body3',
-                      image: Image.network(
-                          'https://raw.githubusercontent.com/tpp-guille-santi/materials/main/iconos/paper.png')),
-                  MaterialCard(
-                      title: 'Metal',
-                      body: 'body3',
-                      image: Image.network(
-                          'https://raw.githubusercontent.com/tpp-guille-santi/materials/main/iconos/metal.png')),
-                  MaterialCard(
-                      title: 'Basura',
-                      body: 'body3',
-                      image: Image.network(
-                          'https://raw.githubusercontent.com/tpp-guille-santi/materials/main/iconos/waste.png'))
-                ],
-              ),
+              child: getList(),
             ),
           ],
         ),
