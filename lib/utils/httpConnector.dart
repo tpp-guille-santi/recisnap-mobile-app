@@ -31,4 +31,17 @@ class HttpConnector {
       print(response.statusCode);
     }
   }
+
+  getRecyclingMarkdown() async {
+    http.Response response = await http.get(Uri.http(
+        "raw.githubusercontent.com",
+        "/tpp-guille-santi/materials/main/recycling.md"));
+
+    if (response.statusCode == 200) {
+      String data = response.body;
+      return data;
+    } else {
+      print(response.statusCode);
+    }
+  }
 }
