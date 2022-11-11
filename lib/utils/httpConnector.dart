@@ -33,14 +33,16 @@ class HttpConnector {
   }
 
   getRecyclingMarkdown() async {
-    http.Response response = await http.get(Uri.http(
-        "raw.githubusercontent.com",
-        "/tpp-guille-santi/materials/main/recycling.md"));
+    print("F");
+    http.Response response = await http.get(Uri.parse(
+        "https://raw.githubusercontent.com/tpp-guille-santi/materials/main/recycling.md"));
 
     if (response.statusCode == 200) {
       String data = response.body;
       return data;
     } else {
+      print(response.body);
+      print(response.toString());
       print(response.statusCode);
     }
   }

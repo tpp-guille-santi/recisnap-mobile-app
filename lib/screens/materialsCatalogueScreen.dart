@@ -21,10 +21,10 @@ class MaterialsCatalogue extends StatelessWidget {
             itemCount: result.length,
             itemBuilder: (context, index) {
               return MaterialCard(
-                  title: result[index]['material'],
+                  title: result[index]['name'],
                   body: 'body',
                   image: Image.network(
-                      'https://raw.githubusercontent.com/tpp-guille-santi/materials/main/iconos/${result[index]['material']}.png'));
+                      'https://raw.githubusercontent.com/tpp-guille-santi/materials/main/iconos/${result[index]['name']}.png'));
             });
       },
     );

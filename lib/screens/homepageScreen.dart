@@ -80,7 +80,7 @@ class _HomepageState extends State<Homepage> {
               final image = await _controller.takePicture();
               //Mandar a server
               var response = await cnnConnector.cataloguePicture(image.path);
-              var material = response['material'];
+              var material = response['name'];
               var instructions =
                   await markdownManager.getInstructions(material);
               //Pasar a resultado
