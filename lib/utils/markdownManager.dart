@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:recyclingapp/utils/httpConnector.dart';
 
 class MarkdownManager {

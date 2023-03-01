@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
-import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
-import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
+import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/utils/markdownManager.dart';
+import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 
 class Homepage extends StatefulWidget {
   @override

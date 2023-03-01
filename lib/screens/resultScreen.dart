@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/widgets/resultPageButton.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ResultScreen extends StatelessWidget {
   @override
