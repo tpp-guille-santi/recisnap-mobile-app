@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:recyclingapp/consts.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
 import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/utils/markdownManager.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -125,7 +124,8 @@ class _HomepageState extends State<Homepage> {
       var cameras = await availableCameras();
       _firstCamera = cameras.first;
       // initialize camera controllers.
-      _controller = new CameraController(_firstCamera, ResolutionPreset.medium, enableAudio: false);
+      _controller = new CameraController(_firstCamera, ResolutionPreset.medium,
+          enableAudio: false);
       _initializeControllerFuture = _controller.initialize();
       setState(() {
         screens[1] = CameraScreen(
@@ -135,8 +135,6 @@ class _HomepageState extends State<Homepage> {
       return;
     }
   }
-
-
 
   @override
   void dispose() {

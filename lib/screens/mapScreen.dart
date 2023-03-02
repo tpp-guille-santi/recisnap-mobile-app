@@ -6,14 +6,11 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart' as location_package;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/material.dart';
 
 class MapScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MapScreenState();
 }
-
-
 
 class _MapScreenState extends State<MapScreen> {
   LatLng _latLng = LatLng(-24.733022, -65.495158);
