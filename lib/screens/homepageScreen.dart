@@ -37,7 +37,6 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
-    _getLocationPermission();
     _setupCamera();
   }
 
@@ -114,6 +113,12 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> _setupCamera() async {
+    if (await Permission.camera.request().isDenied) {
+      exit(0);
+    }
+    if (await Permission.locationWhenInUse.request().isDenied) {
+      exit(0);
+    }
     WidgetsFlutterBinding.ensureInitialized();
     try {
       // initialize cameras.
@@ -131,12 +136,7 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
-  Future<void> _getLocationPermission() async {
-    if (await Permission.locationWhenInUse.request().isDenied ||
-        await Permission.camera.request().isDenied) {
-      exit(0);
-    }
-  }
+
 
   @override
   void dispose() {
