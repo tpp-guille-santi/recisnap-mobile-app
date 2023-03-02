@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
+import 'package:recyclingapp/screens/mapScreen.dart';
 import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/utils/markdownManager.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -24,7 +28,8 @@ class _HomepageState extends State<Homepage> {
       controller: null,
       future: null,
     ),
-    MaterialsCatalogue()
+    MaterialsCatalogue(),
+    MapScreen()
   ];
   NeuralNetworkConnector cnnConnector = NeuralNetworkConnector();
   MarkdownManager markdownManager = new MarkdownManager();
@@ -32,10 +37,11 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
+    _getLocationPermission();
     _setupCamera();
   }
 
-  void _onItemTapped(int index) {
+  void _onDestinationSelected(int index) {
     setState(() {
       _index = index;
       _showFab = (index == 1);
@@ -45,31 +51,32 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: LIGHT_GREEN_COLOR,
       body: screens.elementAt(_index),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
+      bottomNavigationBar: NavigationBar(
+        destinations: const <NavigationDestination>[
+          NavigationDestination(
+            selectedIcon: Icon(Icons.school),
+            icon: Icon(Icons.school_outlined),
             label: 'Reciclaje',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.camera_alt),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.camera_alt),
+            icon: Icon(Icons.camera_alt_outlined),
             label: 'Camera',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list_rounded),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.view_list),
+            icon: Icon(Icons.view_list_outlined),
             label: 'Catálogo',
           ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.map),
+            icon: Icon(Icons.map_outlined),
+            label: 'Mapa',
+          ),
         ],
-        currentIndex: _index,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.black,
-        selectedLabelStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-        ),
-        unselectedItemColor: Colors.black26,
-        backgroundColor: DARK_GREEN_COLOR,
+        onDestinationSelected: _onDestinationSelected,
+        selectedIndex: _index,
       ),
       floatingActionButton: Visibility(
         visible: _showFab,
@@ -94,7 +101,7 @@ class _HomepageState extends State<Homepage> {
                 },
               );
               print("Returns: $result");
-              _onItemTapped(result as int);
+              _onDestinationSelected(result as int);
             } catch (e) {
               // If an error occurs, log the error to the console.
               print(e);
@@ -121,6 +128,12 @@ class _HomepageState extends State<Homepage> {
       });
     } on CameraException catch (_) {
       return;
+    }
+  }
+
+  Future<void> _getLocationPermission() async {
+    if (await Permission.locationWhenInUse.request().isDenied) {
+      exit(0);
     }
   }
 

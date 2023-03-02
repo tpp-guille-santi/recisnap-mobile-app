@@ -20,9 +20,6 @@ class ResultPageButton extends StatelessWidget {
             color: Colors.black,
           ),
         ),
-        style: TextButton.styleFrom(
-          backgroundColor: DARK_GREEN_COLOR,
-        ),
       ),
     );
   }

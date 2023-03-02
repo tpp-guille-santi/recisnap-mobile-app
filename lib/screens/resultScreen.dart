@@ -9,9 +9,7 @@ class ResultScreen extends StatelessWidget {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
     return Scaffold(
-      backgroundColor: LIGHT_GREEN_COLOR,
       bottomSheet: Container(
-        color: LIGHT_GREEN_COLOR,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
