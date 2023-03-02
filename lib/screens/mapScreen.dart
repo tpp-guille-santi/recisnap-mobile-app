@@ -67,5 +67,6 @@ class _MapScreenState extends State<MapScreen> {
     final _locationData = await location.getLocation();
     final latLng = LatLng(_locationData.latitude!, _locationData.longitude!);
     _mapController.move(latLng, 15.0);
+    _mapController.rotate(0);
   }
 }
