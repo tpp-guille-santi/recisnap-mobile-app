@@ -132,7 +132,9 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> _getLocationPermission() async {
-    if (await Permission.locationWhenInUse.request().isDenied) {
+    if (await Permission.locationWhenInUse.request().isDenied ||
+        await Permission.camera.request().isDenied||
+        await Permission.microphone.request().isDenied) {
       exit(0);
     }
   }
