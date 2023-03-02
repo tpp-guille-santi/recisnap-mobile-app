@@ -26,7 +26,6 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(_latLng.toString());
     return Scaffold(
       body: FlutterMap(
         mapController: _mapController,

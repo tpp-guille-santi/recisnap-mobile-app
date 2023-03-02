@@ -14,7 +14,12 @@ class CameraScreen extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           // If the Future is complete, display the preview.
-          return CameraPreview(controller!);
+          final scale = 1 / (controller!.value.aspectRatio * MediaQuery.of(context).size.aspectRatio);
+          return Transform.scale(
+            scale: scale,
+            alignment: Alignment.topCenter,
+            child: CameraPreview(controller!),
+          );
         } else {
           // Otherwise, display a loading indicator.
           return const Center(child: CircularProgressIndicator());
