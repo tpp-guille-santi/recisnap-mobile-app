@@ -120,7 +120,7 @@ class _HomepageState extends State<Homepage> {
       var cameras = await availableCameras();
       _firstCamera = cameras.first;
       // initialize camera controllers.
-      _controller = new CameraController(_firstCamera, ResolutionPreset.medium);
+      _controller = new CameraController(_firstCamera, ResolutionPreset.medium, enableAudio: false);
       _initializeControllerFuture = _controller.initialize();
       setState(() {
         screens[1] = CameraScreen(
@@ -133,8 +133,7 @@ class _HomepageState extends State<Homepage> {
 
   Future<void> _getLocationPermission() async {
     if (await Permission.locationWhenInUse.request().isDenied ||
-        await Permission.camera.request().isDenied||
-        await Permission.microphone.request().isDenied) {
+        await Permission.camera.request().isDenied) {
       exit(0);
     }
   }
