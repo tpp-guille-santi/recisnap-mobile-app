@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
+import '../consts.dart';
+import '../entities/instruction.dart';
+
 class HttpConnector {
   getData(File image) async {
     var request = new http.MultipartRequest(
@@ -56,6 +59,37 @@ class HttpConnector {
       return data;
     } else {
       print(response.statusCode);
+    }
+  }
+
+  searchInstructions(lat, lon) async {
+    var url = 'https://recisnap-1-y9816629.deta.app/instructions/search';
+
+    Map data = {
+      "lat": lat,
+      "lon": lon,
+      "max_distance": MAX_DISTANCE,
+    };
+    //encode Map to JSON
+    print(data);
+    var body = json.encode(data);
+    http.Response response = await http.post(Uri.parse(url),
+        body: body,
+        headers: {HttpHeaders.contentTypeHeader: "application/json"});
+    if (response.statusCode == 200) {
+      body = await response.body;
+      List<Instruction> instructions = List<Instruction>.from(
+          json.decode(body)
+              .map((instruction) => Instruction.fromJson(instruction))
+      );
+      for(Instruction instruction in instructions){
+        print(instruction.toJson().toString());
+      }
+
+      return instructions;
+    } else {
+      print(response.statusCode);
+      return [];
     }
   }
 }

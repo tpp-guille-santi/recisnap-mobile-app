@@ -6,22 +6,73 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart' as location_package;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:recyclingapp/entities/instruction.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import '../utils/httpConnector.dart';
+import '../widgets/customMarker.dart';
 
 class MapScreen extends StatefulWidget {
+  MapScreen({
+    required this.panelController,
+  });
+
+  final PanelController? panelController;
+
+
+
   @override
   State<StatefulWidget> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   LatLng _latLng = LatLng(-24.733022, -65.495158);
   double _zoom = 3.0;
   late MapController _mapController;
+  List<Instruction> _instructions = [];
+  double _rotation = 0;
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
     centerMap(_mapController);
+  }
+
+  void _animatedMapMove(LatLng destLocation, double destZoom, double rotation) {
+    // Create some tweens. These serve to split up the transition from one location to another.
+    // In our case, we want to split the transition be<tween> our current map center and the destination.
+    final latTween = Tween<double>(
+        begin: _mapController.center.latitude, end: destLocation.latitude);
+    final lngTween = Tween<double>(
+        begin: _mapController.center.longitude, end: destLocation.longitude);
+    final zoomTween = Tween<double>(begin: _mapController.zoom, end: destZoom);
+    final rotationTween = Tween<double>(begin: _mapController.rotation, end: rotation);
+
+    // Create a animation controller that has a duration and a TickerProvider.
+    final controller = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this);
+    // The animation determines what path the animation will take. You can try different Curves values, although I found
+    // fastOutSlowIn to be my favorite.
+    final Animation<double> animation =
+    CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+
+    controller.addListener(() {
+      _mapController.move(
+          LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
+          zoomTween.evaluate(animation));
+      _mapController.rotate(rotationTween.evaluate(animation));
+    });
+
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        controller.dispose();
+      } else if (status == AnimationStatus.dismissed) {
+        controller.dispose();
+      }
+    });
+
+    controller.forward();
   }
 
   @override
@@ -32,6 +83,13 @@ class _MapScreenState extends State<MapScreen> {
         options: MapOptions(
           center: _latLng,
           zoom: _zoom,
+          maxZoom: 18,
+          onPositionChanged: (mapPosition, _) => setState(() {
+            this._rotation = this._mapController.rotation;
+          }),
+          onTap: (tapPosition, point) => {
+            widget.panelController!.close(),
+          },
         ),
         nonRotatedChildren: [
           AttributionWidget.defaultWidget(
@@ -43,7 +101,23 @@ class _MapScreenState extends State<MapScreen> {
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.example.app',
+              keepBuffer: 20
           ),
+          MarkerLayer(markers: [
+            for (var instruction in _instructions)
+              Marker(
+                width: 80,
+                height: 80,
+                point: LatLng(instruction.lat, instruction.lon),
+                builder: (context) => Transform.rotate(
+                    angle: -this._rotation * pi / 180,
+                    child: CustomMarker(onPressed: () {
+                      print('I am a function with no return value');
+                      widget.panelController!.animatePanelToSnapPoint();
+                    })),
+                anchorPos: AnchorPos.align(AnchorAlign.center),
+              )
+          ])
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -60,9 +134,23 @@ class _MapScreenState extends State<MapScreen> {
       exit(0);
     }
     final location_package.Location location = location_package.Location();
-    final _locationData = await location.getLocation();
-    final latLng = LatLng(_locationData.latitude!, _locationData.longitude!);
-    _mapController.move(latLng, 15.0);
-    _mapController.rotate(0);
+    final locationData = await location.getLocation();
+    final latLng = LatLng(locationData.latitude!, locationData.longitude!);
+    _animatedMapMove(latLng, 15.0, 0);
+    setState(() {
+      this._latLng = latLng;
+      this._rotation = this._mapController.rotation;
+    });
+
+    getInstructions();
+  }
+
+  Future<void> getInstructions() async {
+    HttpConnector networkHelper = HttpConnector();
+    List<Instruction> instructions = await networkHelper.searchInstructions(
+        _latLng.latitude, _latLng.latitude);
+    setState(() {
+      _instructions = instructions;
+    });
   }
 }

@@ -14,3 +14,5 @@ const String BATTERIES_INFORMATION =
 const String PAPER_INFORMATION = '';
 const String METAL_INFORMATION = '';
 const String WASTE_INFORMATION = '';
+
+const int MAX_DISTANCE = 2000000000;
