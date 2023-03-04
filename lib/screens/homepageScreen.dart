@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
@@ -46,6 +47,7 @@ class _HomepageState extends State<Homepage> {
       screens[3] = MapScreen(panelController:
           widget._panelController);
     });
+    FlutterNativeSplash.remove();
   }
 
   void _onDestinationSelected(int index) {

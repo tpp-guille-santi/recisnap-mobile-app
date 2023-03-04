@@ -3,7 +3,7 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="recyclingapp">
+        android:label="Recisnap">
         <activity
             android:name=".MainActivity"
             android:exported="true"
