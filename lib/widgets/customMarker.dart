@@ -18,7 +18,7 @@ class CustomMarker extends StatelessWidget {
           size: 40,
           color: Color(0xff143017),
         ),
-        onPressed: ()=>onPressed(),
+        onPressed: () => onPressed(),
       ),
       IconButton(
         splashColor: Colors.transparent,
@@ -28,7 +28,7 @@ class CustomMarker extends StatelessWidget {
           size: 40,
           color: Color(0xff279632),
         ),
-        onPressed: ()=>onPressed(),
+        onPressed: () => onPressed(),
       ),
     ]);
   }
