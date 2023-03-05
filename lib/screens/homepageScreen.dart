@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
@@ -11,18 +10,16 @@ import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/utils/markdownManager.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
 import '../widgets/instructionContent.dart';
 
 class Homepage extends StatefulWidget {
   PanelController _panelController = PanelController();
+
   @override
   _HomepageState createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
-
-  var _firstCamera;
   late CameraController _controller;
   bool _showFab = true;
   late Future<void> _initializeControllerFuture;
@@ -59,10 +56,10 @@ class _HomepageState extends State<Homepage> {
         controller: widget._panelController,
         minHeight: 0,
         maxHeight: MediaQuery.of(context).size.height,
-          snapPoint: 0.25,
+        snapPoint: 0.25,
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-        panel:InstructionContent(),
+        panelBuilder: (sc) => instructionContent(sc, context),
         body: Scaffold(
           body: screens.elementAt(_index),
           bottomNavigationBar: NavigationBar(
@@ -136,30 +133,19 @@ class _HomepageState extends State<Homepage> {
     if (await Permission.locationWhenInUse.request().isDenied) {
       exit(0);
     }
-    try {
-      // initialize cameras.
-      var cameras = await availableCameras();
-      _firstCamera = cameras.first;
-      // initialize camera controllers.
-      _controller = new CameraController(_firstCamera, ResolutionPreset.medium,
-          enableAudio: false);
-      _initializeControllerFuture = _controller.initialize();
-      setState(() {
-        screens[1] = CameraScreen(
-            future: _initializeControllerFuture, controller: _controller);
-      });
-    } on CameraException catch (_) {
-      return;
-    }
+    var cameras = await availableCameras();
+    _controller = new CameraController(cameras.first, ResolutionPreset.medium,
+        enableAudio: false);
+    _initializeControllerFuture = _controller.initialize();
     setState(() {
-      screens[3] = MapScreen(panelController:
-      widget._panelController);
+      screens[1] = CameraScreen(
+          future: _initializeControllerFuture, controller: _controller);
+      screens[3] = MapScreen(panelController: widget._panelController);
     });
   }
 
   @override
   void dispose() {
-    // Dispose of the controller when the widget is disposed.
     _controller.dispose();
     super.dispose();
   }

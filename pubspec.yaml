@@ -36,6 +36,7 @@ dependencies:
   flutter_native_splash: ^2.2.18
   flutter_launcher_icons: ^0.12.0
   flex_seed_scheme: ^1.2.2
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

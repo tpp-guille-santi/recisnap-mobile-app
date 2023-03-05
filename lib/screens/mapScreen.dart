@@ -6,7 +6,9 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart' as location_package;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:recyclingapp/entities/instruction.dart';
+import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../utils/httpConnector.dart';
@@ -101,7 +103,15 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 builder: (context) => Transform.rotate(
                     angle: -this._rotation * pi / 180,
                     child: CustomMarker(onPressed: () {
-                      print('I am a function with no return value');
+                      context
+                          .read<InstructionMarkdown>()
+                          .resetInstructionMarkdown();
+                      context
+                          .read<InstructionMarkdown>()
+                          .setInstruction(instruction, false);
+                      context
+                          .read<InstructionMarkdown>()
+                          .setInstructionMarkdown(instruction);
                       widget.panelController!.animatePanelToSnapPoint();
                     })),
                 anchorPos: AnchorPos.align(AnchorAlign.center),

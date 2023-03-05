@@ -1,32 +1,96 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:recyclingapp/utils/markdownManager.dart';
+import 'package:flutter_native_splash/cli_commands.dart';
+import 'package:provider/provider.dart';
+import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 
-class InstructionContent extends StatelessWidget {
-  final MarkdownManager markdownManager = new MarkdownManager();
+Widget instructionContent(
+  ScrollController sc,
+  BuildContext context,
+) {
+  String? materialName =
+      context.watch<InstructionMarkdown>().instruction?.materialName;
+  bool fromPrediction = context.watch<InstructionMarkdown>().fromPrediction;
+  return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      child: ListView(
+        controller: sc,
+        children: <Widget>[
+          SizedBox(
+            height: 12.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 30,
+                height: 5,
+                decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.all(Radius.circular(12.0))),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 18.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Material ${materialName != null ? materialName.capitalize() : ''}',
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 24.0,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            padding: new EdgeInsets.all(20.0),
+            child: MarkdownBody(
+              data: context.watch<InstructionMarkdown>().instructionMarkdown,
+            ),
+          ),
+          SizedBox(
+            height: 36.0,
+          ),
+          if (fromPrediction)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                _button(Icons.thumb_down, Colors.red),
+                _button(Icons.thumb_up, Colors.green),
+              ],
+            ),
+          SizedBox(
+            height: 24,
+          ),
+        ],
+      ));
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        padding: new EdgeInsets.all(20.0),
-        child: FutureBuilder<String>(
-          future: markdownManager.getRecyclingInformation(),
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return MarkdownBody(data: 'Cargando...',
-              );
-            } else {
-              if (snapshot.hasError)
-                return MarkdownBody(data: 'Error: ${snapshot.error}');
-              else
-                return MarkdownBody(
-                  data: '${snapshot.data}',
-                ); // snapshot.data  :- get your object which is pass from your downloadData() function
-            }
-          },
+Widget _button(IconData icon, Color color) {
+  return Column(
+    children: <Widget>[
+      Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Icon(
+          icon,
+          color: Colors.white,
         ),
+        decoration:
+            BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [
+          BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, 0.15),
+            blurRadius: 8.0,
+          )
+        ]),
       ),
-    );
-  }
+      SizedBox(
+        height: 12.0,
+      ),
+    ],
+  );
 }

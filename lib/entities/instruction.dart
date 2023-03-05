@@ -8,7 +8,6 @@ class Instruction {
   final String? departamento;
   final String? municipio;
 
-
   Instruction(this.materialName, this.editable, this.lat, this.lon,
       this.provincia, this.departamento, this.municipio, this.id);
 
