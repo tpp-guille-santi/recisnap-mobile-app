@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 class CameraScreen extends StatelessWidget {
   final CameraController? controller;
@@ -14,7 +15,9 @@ class CameraScreen extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           // If the Future is complete, display the preview.
-          final scale = 1 / (controller!.value.aspectRatio * MediaQuery.of(context).size.aspectRatio);
+          final scale = 1 /
+              (controller!.value.aspectRatio *
+                  MediaQuery.of(context).size.aspectRatio);
           return Transform.scale(
             scale: scale,
             alignment: Alignment.topCenter,

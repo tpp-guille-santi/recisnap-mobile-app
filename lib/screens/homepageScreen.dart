@@ -42,12 +42,7 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
-    _setupCamera();
-    setState(() {
-      screens[3] = MapScreen(panelController:
-          widget._panelController);
-    });
-    FlutterNativeSplash.remove();
+    initialize();
   }
 
   void _onDestinationSelected(int index) {
@@ -134,14 +129,13 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  Future<void> _setupCamera() async {
+  Future<void> initialize() async {
     if (await Permission.camera.request().isDenied) {
       exit(0);
     }
     if (await Permission.locationWhenInUse.request().isDenied) {
       exit(0);
     }
-    WidgetsFlutterBinding.ensureInitialized();
     try {
       // initialize cameras.
       var cameras = await availableCameras();
@@ -157,6 +151,10 @@ class _HomepageState extends State<Homepage> {
     } on CameraException catch (_) {
       return;
     }
+    setState(() {
+      screens[3] = MapScreen(panelController:
+      widget._panelController);
+    });
   }
 
   @override
