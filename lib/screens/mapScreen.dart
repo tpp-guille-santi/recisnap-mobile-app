@@ -19,8 +19,6 @@ class MapScreen extends StatefulWidget {
 
   final PanelController? panelController;
 
-
-
   @override
   State<StatefulWidget> createState() => _MapScreenState();
 }
@@ -40,30 +38,23 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   void _animatedMapMove(LatLng destLocation, double destZoom, double rotation) {
-    // Create some tweens. These serve to split up the transition from one location to another.
-    // In our case, we want to split the transition be<tween> our current map center and the destination.
     final latTween = Tween<double>(
         begin: _mapController.center.latitude, end: destLocation.latitude);
     final lngTween = Tween<double>(
         begin: _mapController.center.longitude, end: destLocation.longitude);
     final zoomTween = Tween<double>(begin: _mapController.zoom, end: destZoom);
-    final rotationTween = Tween<double>(begin: _mapController.rotation, end: rotation);
-
-    // Create a animation controller that has a duration and a TickerProvider.
+    final rotationTween =
+        Tween<double>(begin: _mapController.rotation, end: rotation);
     final controller = AnimationController(
         duration: const Duration(milliseconds: 500), vsync: this);
-    // The animation determines what path the animation will take. You can try different Curves values, although I found
-    // fastOutSlowIn to be my favorite.
     final Animation<double> animation =
-    CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
-
+        CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
     controller.addListener(() {
       _mapController.move(
           LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
           zoomTween.evaluate(animation));
       _mapController.rotate(rotationTween.evaluate(animation));
     });
-
     animation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         controller.dispose();
@@ -71,7 +62,6 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         controller.dispose();
       }
     });
-
     controller.forward();
   }
 
@@ -99,10 +89,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         ],
         children: [
           TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.example.app',
-              keepBuffer: 20
-          ),
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.example.app',
+              keepBuffer: 20),
           MarkerLayer(markers: [
             for (var instruction in _instructions)
               Marker(
