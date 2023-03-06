@@ -14,7 +14,7 @@ const String BATTERIES_INFORMATION =
 const String PAPER_INFORMATION = '';
 const String METAL_INFORMATION = '';
 const String WASTE_INFORMATION = '';
-const String LOADING_MESSAGE = 'Cargando...';
+const String LOADING_MESSAGE = 'Cargando....';
 
 const String BACKEND_URL = 'https://recisnap-1-y9816629.deta.app';
 const int MAX_DISTANCE = 2000000000;
