@@ -10,6 +10,7 @@ import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/utils/markdownManager.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
 import '../widgets/instructionContent.dart';
 
 class Homepage extends StatefulWidget {
