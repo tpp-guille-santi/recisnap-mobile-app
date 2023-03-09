@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:recyclingapp/consts.dart';
-import 'package:recyclingapp/widgets/resultPageButton.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:recyclingapp/widgets/resultPageButton.dart';
 
 class ResultScreen extends StatelessWidget {
   @override
@@ -9,9 +8,7 @@ class ResultScreen extends StatelessWidget {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
     return Scaffold(
-      backgroundColor: LIGHT_GREEN_COLOR,
       bottomSheet: Container(
-        color: LIGHT_GREEN_COLOR,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

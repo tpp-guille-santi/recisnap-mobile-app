@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:recyclingapp/consts.dart';
 
 class RecyclingMaterialButton extends StatelessWidget {
   final String buttonText;
@@ -11,9 +10,6 @@ class RecyclingMaterialButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPress,
-      style: TextButton.styleFrom(
-        backgroundColor: DARK_GREEN_COLOR,
-      ),
       child: Text(
         buttonText,
         style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),

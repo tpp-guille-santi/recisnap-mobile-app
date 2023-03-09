@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-const LIGHT_GREEN_COLOR = Color(0xFF9CD4B0);
-const DARK_GREEN_COLOR = Color(0xFF028943);
 const TEXT_TITLE_THEME =
     TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 35.0);
 
@@ -16,3 +14,7 @@ const String BATTERIES_INFORMATION =
 const String PAPER_INFORMATION = '';
 const String METAL_INFORMATION = '';
 const String WASTE_INFORMATION = '';
+const String LOADING_MESSAGE = 'Cargando...';
+
+const String BACKEND_URL = 'https://recisnap-1-y9816629.deta.app';
+const int MAX_DISTANCE = 2000000000;

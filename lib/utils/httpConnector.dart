@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'dart:convert';
+
+import '../consts.dart';
+import '../entities/instruction.dart';
 
 class HttpConnector {
   getData(File image) async {
@@ -33,7 +36,6 @@ class HttpConnector {
   }
 
   getRecyclingMarkdown() async {
-    print("F");
     http.Response response = await http.get(Uri.parse(
         "https://raw.githubusercontent.com/tpp-guille-santi/materials/main/recycling.md"));
 
@@ -41,8 +43,6 @@ class HttpConnector {
       String data = response.body;
       return data;
     } else {
-      print(response.body);
-      print(response.toString());
       print(response.statusCode);
     }
   }
@@ -56,6 +56,38 @@ class HttpConnector {
       return data;
     } else {
       print(response.statusCode);
+    }
+  }
+
+  getInstructionMarkdown(String id) async {
+    var url = '$BACKEND_URL/instructions/$id/markdown';
+    http.Response response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      var instructionMarkdown = response.body;
+      return instructionMarkdown;
+    } else {
+      return '';
+    }
+  }
+
+  searchInstructions(lat, lon) async {
+    var url = '$BACKEND_URL/instructions/search';
+    Map data = {
+      "lat": lat,
+      "lon": lon,
+      "max_distance": MAX_DISTANCE,
+    };
+    var headers = {HttpHeaders.contentTypeHeader: "application/json"};
+    http.Response response = await http.post(Uri.parse(url),
+        body: json.encode(data), headers: headers);
+    if (response.statusCode == 200) {
+      var body = response.body;
+      List<Instruction> instructions = List<Instruction>.from(json
+          .decode(body)
+          .map((instruction) => Instruction.fromJson(instruction)));
+      return instructions;
+    } else {
+      return [];
     }
   }
 }

@@ -20,7 +20,7 @@ class InformationScreen extends StatelessWidget {
               else
                 return Markdown(
                   data: '${snapshot.data}',
-                ); // snapshot.data  :- get your object which is pass from your downloadData() function
+                );
             }
           },
         ),

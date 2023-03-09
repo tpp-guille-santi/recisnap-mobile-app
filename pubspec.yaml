@@ -23,25 +23,26 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  camera: ^0.9.2+1
-  path: ^1.8.0
-  path_provider: ^2.0.3
-  http: ^0.13.0
-  flutter_markdown: ^0.6.10
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
+  camera: ^0.10.3+2
+  path: ^1.8.2
+  path_provider: ^2.0.13
+  http: ^0.13.5
+  flutter_markdown: ^0.6.14
+  cupertino_icons: ^1.0.5
+  flutter_map: ^3.1.0
+  location: ^4.4.0
+  permission_handler: ^10.2.0
+  sliding_up_panel: ^2.0.0+1
+  flutter_native_splash: ^2.2.19
+  flutter_launcher_icons: ^0.12.0
+  flex_seed_scheme: ^1.2.2
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
 
 assets:

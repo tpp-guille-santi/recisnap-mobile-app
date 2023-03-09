@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:recyclingapp/consts.dart';
 
 class ResultPageButton extends StatelessWidget {
   final Function() onPressed;
@@ -19,9 +18,6 @@ class ResultPageButton extends StatelessWidget {
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
-        ),
-        style: TextButton.styleFrom(
-          backgroundColor: DARK_GREEN_COLOR,
         ),
       ),
     );
