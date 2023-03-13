@@ -37,6 +37,8 @@ dependencies:
   flutter_launcher_icons: ^0.12.0
   flex_seed_scheme: ^1.2.2
   provider: ^6.0.5
+  firebase_core: ^2.7.1
+  firebase_ml_model_downloader: ^0.2.0+12
 
 dev_dependencies:
   flutter_test:
