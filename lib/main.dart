@@ -24,6 +24,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Define your seed colors.
+   Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(

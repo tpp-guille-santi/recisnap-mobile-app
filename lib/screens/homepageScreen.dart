@@ -10,7 +10,7 @@ import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/utils/markdownManager.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
+import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import '../widgets/instructionContent.dart';
 
 class Homepage extends StatefulWidget {
@@ -34,7 +34,7 @@ class _HomepageState extends State<Homepage> {
     MaterialsCatalogue(),
     MapScreen(panelController: null)
   ];
-  NeuralNetworkConnector cnnConnector = NeuralNetworkConnector();
+  late NeuralNetworkConnector cnnConnector;
   MarkdownManager markdownManager = new MarkdownManager();
 
   @override
@@ -138,6 +138,20 @@ class _HomepageState extends State<Homepage> {
     _controller = new CameraController(cameras.first, ResolutionPreset.medium,
         enableAudio: false);
     _initializeControllerFuture = _controller.initialize();
+    var customModel = await FirebaseModelDownloader.instance
+        .getModel(
+        "recisnap-cnn",
+        FirebaseModelDownloadType.localModelUpdateInBackground,
+        FirebaseModelDownloadConditions(
+          iosAllowsCellularAccess: true,
+          iosAllowsBackgroundDownloading: true,
+          androidChargingRequired: false,
+          androidWifiRequired: false,
+          androidDeviceIdleRequired: false,
+        )
+    );
+    this.cnnConnector = NeuralNetworkConnector(customModel.file);
+
     setState(() {
       screens[1] = CameraScreen(
           future: _initializeControllerFuture, controller: _controller);
