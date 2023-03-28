@@ -140,7 +140,7 @@ class _HomepageState extends State<Homepage> {
     _initializeControllerFuture = _controller.initialize();
     var customModel = await FirebaseModelDownloader.instance
         .getModel(
-        "recisnap-cnn",
+        "recisnap-nn",
         FirebaseModelDownloadType.localModelUpdateInBackground,
         FirebaseModelDownloadConditions(
           iosAllowsCellularAccess: true,
@@ -150,6 +150,7 @@ class _HomepageState extends State<Homepage> {
           androidDeviceIdleRequired: false,
         )
     );
+    print(customModel);
     this.cnnConnector = NeuralNetworkConnector(customModel.file);
 
     setState(() {
