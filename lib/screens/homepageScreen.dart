@@ -96,10 +96,8 @@ class _HomepageState extends State<Homepage> {
                 try {
                   await _initializeControllerFuture;
                   final image = await _controller.takePicture();
-                  //Mandar a server
-                  var response =
-                      await cnnConnector.cataloguePicture(image.path);
-                  var material = response['name'];
+                  //Mandar a red
+                  var material = await cnnConnector.cataloguePicture(image.path);
                   var instructions =
                       await markdownManager.getInstructions(material);
                   //Pasar a resultado
@@ -150,7 +148,6 @@ class _HomepageState extends State<Homepage> {
           androidDeviceIdleRequired: false,
         )
     );
-    print(customModel);
     this.cnnConnector = NeuralNetworkConnector(customModel.file);
 
     setState(() {
