@@ -11,6 +11,7 @@ class NeuralNetworkConnector {
   }
 
   Future<String> cataloguePicture(String imagePath) async{
+    print("hora de catalogar");
     var results = await Tflite.runModelOnImage(
         path: imagePath,
         numResults: 6,
@@ -19,9 +20,10 @@ class NeuralNetworkConnector {
         imageStd: 127.5,
       );
     if(results == null){
-      return "";
+      return "Ups!";
     }
     var labelInfo = results[0];
+    print(labelInfo);
     return labelInfo.label;
   }
 

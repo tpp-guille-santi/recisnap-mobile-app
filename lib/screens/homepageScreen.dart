@@ -97,8 +97,11 @@ class _HomepageState extends State<Homepage> {
                   await _initializeControllerFuture;
                   final image = await _controller.takePicture();
                   //Mandar a red
+                  print("saque foto");
                   var material = await cnnConnector.cataloguePicture(image.path);
-                  var instructions =
+                  print(material);
+                  print("termine de clasificar");
+                  /*var instructions =
                       await markdownManager.getInstructions(material);
                   //Pasar a resultado
                   final result = await Navigator.pushNamed(
@@ -111,7 +114,7 @@ class _HomepageState extends State<Homepage> {
                     },
                   );
                   print("Returns: $result");
-                  _onDestinationSelected(result as int);
+                  _onDestinationSelected(result as int);*/
                 } catch (e) {
                   // If an error occurs, log the error to the console.
                   print(e);
