@@ -47,8 +47,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-assets:
-  - 'assets/greenlogo.png'
-  - 'assets/labels.txt'
+  assets:
+    - 'assets/greenlogo.png'
+    - 'assets/labels.txt'
+    - 'assets/model.tflite'
 

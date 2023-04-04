@@ -36,16 +36,19 @@ class NeuralNetworkConnector {
   }
 
   Future buildModel(File file) async{
+    print(file.path);
     try {
+      print("Armando modelo");
       var res = await Tflite.loadModel(
-          model: file.path,
+          model: 'assets/model.tflite',
           labels: "assets/labels.txt",
           numThreads: 1, // defaults to 1
-          isAsset: false, // defaults to true, set to false to load resources outside assets
+          isAsset: true, // defaults to true, set to false to load resources outside assets
           useGpuDelegate: false // defaults to false, set to true to use GPU delegate
       );
       print(res);
-    } on Exception {
+    } on Exception catch(e){
+      print(e);
       print('Failed to load model.');
     }
   }
