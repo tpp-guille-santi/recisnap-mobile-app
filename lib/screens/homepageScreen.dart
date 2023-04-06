@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
@@ -12,6 +13,11 @@ import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import '../widgets/instructionContent.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+
 
 class Homepage extends StatefulWidget {
   PanelController _panelController = PanelController();
@@ -151,7 +157,10 @@ class _HomepageState extends State<Homepage> {
           androidDeviceIdleRequired: false,
         )
     );
-    this.cnnConnector = NeuralNetworkConnector(customModel.file);
+    var downloadedModel = customModel.file;
+    var assetModel = await copyAssetToFile("assets/model.tflite", "my_model.tflite");
+    var labelFile = await copyAssetToFile("assets/labels.txt", "my_labels.txt");
+    this.cnnConnector = NeuralNetworkConnector(downloadedModel, labelFile);
 
     setState(() {
       screens[1] = CameraScreen(
@@ -165,4 +174,26 @@ class _HomepageState extends State<Homepage> {
     _controller.dispose();
     super.dispose();
   }
+
+  Future<File> moveFile(File sourceFile, String newPath) async {
+    try {
+      // prefer using rename as it is probably faster
+      return await sourceFile.rename(newPath);
+    } on FileSystemException catch (e) {
+      // if rename fails, copy the source file and then delete it
+      final newFile = await sourceFile.copy(newPath);
+      await sourceFile.delete();
+      return newFile;
+    }
+  }
+
+
+  Future<File> copyAssetToFile(String asset, String path) async{
+    var bytes = await rootBundle.load(asset);
+    final buffer = bytes.buffer;
+    final directory = await getApplicationDocumentsDirectory();
+    return new File('${directory.path}/$path').writeAsBytes(
+        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+  }
 }
+

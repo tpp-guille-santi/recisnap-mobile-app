@@ -6,8 +6,8 @@ import 'package:tflite/tflite.dart';
 class NeuralNetworkConnector {
 
 
-  NeuralNetworkConnector(File modelFile){
-    buildModel(modelFile);
+  NeuralNetworkConnector(File modelFile, File labelFile){
+    buildModel(modelFile, labelFile);
   }
 
   Future<String> cataloguePicture(String imagePath) async{
@@ -35,15 +35,15 @@ class NeuralNetworkConnector {
     return response;
   }
 
-  Future buildModel(File file) async{
-    print(file.path);
+  Future buildModel(File modelFile, File labelFile) async{
+    print(modelFile.path);
     try {
       print("Armando modelo");
       var res = await Tflite.loadModel(
-          model: 'assets/model.tflite',
-          labels: "assets/labels.txt",
+          model: modelFile.path,
+          labels: labelFile.path,
           numThreads: 1, // defaults to 1
-          isAsset: true, // defaults to true, set to false to load resources outside assets
+          isAsset: false, // defaults to true, set to false to load resources outside assets
           useGpuDelegate: false // defaults to false, set to true to use GPU delegate
       );
       print(res);
