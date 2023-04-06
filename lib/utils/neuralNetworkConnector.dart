@@ -24,7 +24,7 @@ class NeuralNetworkConnector {
     }
     var labelInfo = results[0];
     print(labelInfo);
-    return labelInfo.label;
+    return labelInfo["label"];
   }
 
   Future<String> getMaterialList() async {

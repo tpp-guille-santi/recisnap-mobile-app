@@ -51,4 +51,3 @@ flutter:
     - 'assets/greenlogo.png'
     - 'assets/labels.txt'
     - 'assets/model.tflite'
-    - 'assets/og_model.tflite'
