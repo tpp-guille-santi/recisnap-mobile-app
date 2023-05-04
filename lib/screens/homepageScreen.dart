@@ -158,7 +158,7 @@ class _HomepageState extends State<Homepage> {
         )
     );
     var downloadedModel = customModel.file;
-    var assetModel = await copyAssetToFile("assets/model.tflite", "my_model.tflite");
+    //var assetModel = await copyAssetToFile("assets/model.tflite", "my_model.tflite");
     var labelFile = await copyAssetToFile("assets/labels.txt", "my_labels.txt");
     this.cnnConnector = NeuralNetworkConnector(downloadedModel, labelFile);
 
