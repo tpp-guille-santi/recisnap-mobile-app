@@ -23,7 +23,7 @@ class HttpConnector {
   }
 
   saveImage(File image) async {
-    var url = '$BACKEND_URL/instructions/upload';
+    var url = '$BACKEND_URL/instructions/upload/';
     var request = new http.MultipartRequest(
         "POST", Uri.https('peaceful-refuge-34158.herokuapp.com', '/images'));
     request.files.add(await http.MultipartFile.fromPath('file', image.path,
@@ -75,7 +75,7 @@ class HttpConnector {
   }
 
   getInstructionMarkdown(String id) async {
-    var url = '$BACKEND_URL/instructions/$id/markdown';
+    var url = '$BACKEND_URL/instructions/$id/markdown/';
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var instructionMarkdown = response.body;
@@ -86,7 +86,7 @@ class HttpConnector {
   }
 
   searchInstructions(lat, lon) async {
-    var url = '$BACKEND_URL/instructions/search';
+    var url = '$BACKEND_URL/instructions/search/';
     Map data = {
       "lat": lat,
       "lon": lon,
