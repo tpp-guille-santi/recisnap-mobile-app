@@ -31,7 +31,7 @@ class _HomepageState extends State<Homepage> {
       controller: null,
       future: null,
     ),
-    MaterialsCatalogue(),
+    // MaterialsCatalogue(),
     MapScreen(panelController: null)
   ];
   NeuralNetworkConnector cnnConnector = NeuralNetworkConnector();
@@ -75,11 +75,11 @@ class _HomepageState extends State<Homepage> {
                 icon: Icon(Icons.camera_alt_outlined),
                 label: 'Camera',
               ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.view_list),
-                icon: Icon(Icons.view_list_outlined),
-                label: 'Catálogo',
-              ),
+              // NavigationDestination(
+              //   selectedIcon: Icon(Icons.view_list),
+              //   icon: Icon(Icons.view_list_outlined),
+              //   label: 'Catálogo',
+              // ),
               NavigationDestination(
                 selectedIcon: Icon(Icons.map),
                 icon: Icon(Icons.map_outlined),
@@ -97,23 +97,27 @@ class _HomepageState extends State<Homepage> {
                   await _initializeControllerFuture;
                   final image = await _controller.takePicture();
                   //Mandar a server
-                  var response =
-                      await cnnConnector.cataloguePicture(image.path);
-                  var material = response['name'];
-                  var instructions =
-                      await markdownManager.getInstructions(material);
+                  print("AAAAAAAAAAAAAAAAaAAAAAAAAAAAAAAAAAaA");
+                  print(image.name);
+                  print("AAAAAAAAAAAAAAAAaAAAAAAAAAAAAAAAAAaA");
+                  var instructions = "";
+                  // var response =
+                  //     await cnnConnector.cataloguePicture(image.path);
+                  // var material = response['name'];
+                  // var instructions =
+                  //     await markdownManager.getInstructions(material);
                   //Pasar a resultado
-                  final result = await Navigator.pushNamed(
-                    context,
-                    '/results',
-                    arguments: {
-                      'instructions': instructions,
-                      'cameraIndex': 1,
-                      'catalogueIndex': 2
-                    },
-                  );
-                  print("Returns: $result");
-                  _onDestinationSelected(result as int);
+                  // final result = await Navigator.pushNamed(
+                  //   context,
+                  //   '/results',
+                  //   arguments: {
+                  //     'instructions': instructions,
+                  //     'cameraIndex': 1,
+                  //     'catalogueIndex': 2
+                  //   },
+                  // );
+                  // print("Returns: $result");
+                  // _onDestinationSelected(result as int);
                 } catch (e) {
                   // If an error occurs, log the error to the console.
                   print(e);
@@ -141,7 +145,7 @@ class _HomepageState extends State<Homepage> {
     setState(() {
       screens[1] = CameraScreen(
           future: _initializeControllerFuture, controller: _controller);
-      screens[3] = MapScreen(panelController: widget._panelController);
+      screens[2] = MapScreen(panelController: widget._panelController);
     });
   }
 

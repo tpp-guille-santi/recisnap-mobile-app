@@ -22,6 +22,21 @@ class HttpConnector {
     }
   }
 
+  saveImage(File image) async {
+    var url = '$BACKEND_URL/instructions/upload';
+    var request = new http.MultipartRequest(
+        "POST", Uri.https('peaceful-refuge-34158.herokuapp.com', '/images'));
+    request.files.add(await http.MultipartFile.fromPath('file', image.path,
+        contentType: new MediaType('image', 'jpg')));
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      String serverResponse = await response.stream.bytesToString();
+      return jsonDecode(serverResponse);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
   getMarkdown(String material) async {
     http.Response response = await http.get(Uri.http(
         "raw.githubusercontent.com",

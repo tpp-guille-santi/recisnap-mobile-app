@@ -4,8 +4,6 @@ import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:provider/provider.dart';
 import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 
-import '../screens/feedbackScreen.dart';
-
 Widget instructionContent(
   ScrollController sc,
   BuildContext context,
@@ -58,12 +56,12 @@ Widget instructionContent(
           SizedBox(
             height: 36.0,
           ),
-          if (true)
+          if (fromPrediction)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _button(context, Icons.thumb_down, Colors.red),
-                _button(context, Icons.thumb_up, Colors.green),
+                _button(Icons.thumb_down, Colors.red),
+                _button(Icons.thumb_up, Colors.green),
               ],
             ),
           SizedBox(
@@ -73,44 +71,26 @@ Widget instructionContent(
       ));
 }
 
-Widget _button(BuildContext context, IconData icon, Color color) {
-  return ElevatedButton(
-    child: Icon(
-      icon,
-      color: Colors.white,
-    ),
-    style: ElevatedButton.styleFrom(
-      backgroundColor: color,
-      padding: const EdgeInsets.all(16.0),
-      shape: CircleBorder(),
-    ),
-    onPressed: () {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => FeedbackScreen(),
-          ));
-    },
+Widget _button(IconData icon, Color color) {
+  return Column(
+    children: <Widget>[
+      Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Icon(
+          icon,
+          color: Colors.white,
+        ),
+        decoration:
+            BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [
+          BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, 0.15),
+            blurRadius: 8.0,
+          )
+        ]),
+      ),
+      SizedBox(
+        height: 12.0,
+      ),
+    ],
   );
-  // return Column(
-  // children: <Widget>[
-  // Container(
-  // padding: const EdgeInsets.all(16.0),
-  // child: Icon(
-  // icon,
-  // color: Colors.white,
-  // ),
-  // decoration:
-  // BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [
-  // BoxShadow(
-  // color: Color.fromRGBO(0, 0, 0, 0.15),
-  // blurRadius: 8.0,
-  // )
-  // ]),
-  // ),
-  // SizedBox(
-  // height: 12.0,
-  // ),
-  // ],
-  // );
 }
