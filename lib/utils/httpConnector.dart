@@ -60,7 +60,7 @@ class HttpConnector {
   }
 
   getInstructionMarkdown(String id) async {
-    var url = '$BACKEND_URL/instructions/$id/markdown';
+    var url = '$BACKEND_URL/instructions/$id/markdown/';
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var instructionMarkdown = response.body;
@@ -71,7 +71,7 @@ class HttpConnector {
   }
 
   searchInstructions(lat, lon) async {
-    var url = '$BACKEND_URL/instructions/search';
+    var url = '$BACKEND_URL/instructions/search/';
     Map data = {
       "lat": lat,
       "lon": lon,
