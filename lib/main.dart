@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:recyclingapp/screens/homepageScreen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import 'screens/resultScreen.dart';
 
@@ -22,6 +24,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Define your seed colors.
+   Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
@@ -10,8 +11,13 @@ import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/utils/markdownManager.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
+import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import '../widgets/instructionContent.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+
 
 class Homepage extends StatefulWidget {
   PanelController _panelController = PanelController();
@@ -34,7 +40,7 @@ class _HomepageState extends State<Homepage> {
     MaterialsCatalogue(),
     MapScreen(panelController: null)
   ];
-  NeuralNetworkConnector cnnConnector = NeuralNetworkConnector();
+  late NeuralNetworkConnector cnnConnector;
   MarkdownManager markdownManager = new MarkdownManager();
 
   @override
@@ -96,11 +102,12 @@ class _HomepageState extends State<Homepage> {
                 try {
                   await _initializeControllerFuture;
                   final image = await _controller.takePicture();
-                  //Mandar a server
-                  var response =
-                      await cnnConnector.cataloguePicture(image.path);
-                  var material = response['name'];
-                  var instructions =
+                  //Mandar a red
+                  print("saque foto");
+                  var material = await cnnConnector.cataloguePicture(image.path);
+                  print(material);
+                  print("termine de clasificar");
+                  /*var instructions =
                       await markdownManager.getInstructions(material);
                   //Pasar a resultado
                   final result = await Navigator.pushNamed(
@@ -113,7 +120,7 @@ class _HomepageState extends State<Homepage> {
                     },
                   );
                   print("Returns: $result");
-                  _onDestinationSelected(result as int);
+                  _onDestinationSelected(result as int);*/
                 } catch (e) {
                   // If an error occurs, log the error to the console.
                   print(e);
@@ -138,6 +145,23 @@ class _HomepageState extends State<Homepage> {
     _controller = new CameraController(cameras.first, ResolutionPreset.medium,
         enableAudio: false);
     _initializeControllerFuture = _controller.initialize();
+    var customModel = await FirebaseModelDownloader.instance
+        .getModel(
+        "recisnap-nn",
+        FirebaseModelDownloadType.localModelUpdateInBackground,
+        FirebaseModelDownloadConditions(
+          iosAllowsCellularAccess: true,
+          iosAllowsBackgroundDownloading: true,
+          androidChargingRequired: false,
+          androidWifiRequired: false,
+          androidDeviceIdleRequired: false,
+        )
+    );
+    var downloadedModel = customModel.file;
+    //var assetModel = await copyAssetToFile("assets/model.tflite", "my_model.tflite");
+    var labelFile = await copyAssetToFile("assets/labels.txt", "my_labels.txt");
+    this.cnnConnector = NeuralNetworkConnector(downloadedModel, labelFile);
+
     setState(() {
       screens[1] = CameraScreen(
           future: _initializeControllerFuture, controller: _controller);
@@ -150,4 +174,13 @@ class _HomepageState extends State<Homepage> {
     _controller.dispose();
     super.dispose();
   }
+
+  Future<File> copyAssetToFile(String asset, String path) async{
+    var bytes = await rootBundle.load(asset);
+    final buffer = bytes.buffer;
+    final directory = await getApplicationDocumentsDirectory();
+    return new File('${directory.path}/$path').writeAsBytes(
+        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+  }
 }
+
