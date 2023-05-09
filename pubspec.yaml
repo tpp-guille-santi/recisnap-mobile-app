@@ -40,6 +40,7 @@ dependencies:
   firebase_core: ^2.7.1
   firebase_ml_model_downloader: ^0.2.0+12
   tflite: ^1.1.2
+  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_test:
