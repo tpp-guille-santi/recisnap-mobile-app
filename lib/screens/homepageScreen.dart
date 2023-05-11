@@ -109,22 +109,11 @@ class _HomepageState extends State<Homepage> {
                   var material = await cnnConnector.cataloguePicture(image.path);
                   print(material);
                   print("termine de clasificar");
+                  //Obtener latitud y longitud
                   List positionValues = await _geolocator.getPosition();
-                  
-                  /*var instructions =
-                      await markdownManager.getInstructions(material);
-                  //Pasar a resultado
-                  final result = await Navigator.pushNamed(
-                    context,
-                    '/results',
-                    arguments: {
-                      'instructions': instructions,
-                      'cameraIndex': 1,
-                      'catalogueIndex': 2
-                    },
-                  );
-                  print("Returns: $result");
-                  _onDestinationSelected(result as int);*/
+                  //Obtener el markdown del server.
+                  String markdown = await markdownManager.getInstruction(material, positionValues[0], positionValues[1]);
+                  //Mostrar el resultado al usuario
                 } catch (e) {
                   // If an error occurs, log the error to the console.
                   print(e);
