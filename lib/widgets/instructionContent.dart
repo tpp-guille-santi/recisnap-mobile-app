@@ -7,8 +7,10 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../screens/feedbackScreen.dart';
 
-void navigateToFeedbackScreen(BuildContext context, PanelController panelController) {
-  panelController.close();
+void navigateToFeedbackScreen(BuildContext context, PanelController? panelController) {
+  if (panelController != null && panelController.isAttached) {
+    panelController.close();
+  }
   Navigator.push(
       context,
       MaterialPageRoute(
@@ -16,9 +18,11 @@ void navigateToFeedbackScreen(BuildContext context, PanelController panelControl
       ));
 }
 
-void sendFeedback(BuildContext context, PanelController panelController) {
+void sendFeedback(BuildContext context, PanelController? panelController) {
   // TODO: Acá hay que mandar la imagen y la metadata
-  panelController.close();
+  if (panelController != null && panelController.isAttached) {
+    panelController.close();
+  }
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: const Text('Another thing!'),

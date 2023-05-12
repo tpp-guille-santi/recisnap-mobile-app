@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:textfield_tags/textfield_tags.dart';
 
 import '../consts.dart';
 
 class MyFormWidget extends StatefulWidget {
-  final TextEditingController inputController;
+  final TextfieldTagsController inputController;
 
   const MyFormWidget({Key? key, required this.inputController})
       : super(key: key);
@@ -19,13 +18,9 @@ class _MyFormWidgetState extends State<MyFormWidget> {
   final List<String> _dropdownValues = MATERIALS;
 
   void _submitForm() async {
-/*    final url = Uri.parse('https://my-backend-url.com/submit');
-    final response = await http.post(url, body: {
-      'input': widget.inputController.text,
-      'dropdown': _selectedValue ?? '',
-    });
-    final responseBody = json.decode(response.body);*/
     // TODO: Acá hay que mandar la imagen y la metadata
+    print(widget.inputController.getTags);
+    print(_selectedValue ?? '');
     Navigator.pop(context);
   }
 
@@ -35,11 +30,74 @@ class _MyFormWidgetState extends State<MyFormWidget> {
       children: [
         Container(
           padding: EdgeInsets.only(bottom: 16.0), // Add desired padding/margin
-          child: TextFormField(
-            controller: widget.inputController,
-            decoration: const InputDecoration(
-              labelText: 'Input field',
-            ),
+          child: TextFieldTags(
+            textfieldTagsController: widget.inputController,
+            textSeparators: const [' ', ','],
+            inputfieldBuilder:
+                (context, tec, fn, error, onChanged, onSubmitted) {
+              return ((context, sc, tags, onTagDelete) {
+                return TextField(
+                    controller: tec,
+                    focusNode: fn,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      hintText:
+                          widget.inputController.hasTags ? '' : "Enter tag...",
+                      errorText: error,
+                      prefixIcon: tags.isNotEmpty
+                          ? SingleChildScrollView(
+                              controller: sc,
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                  children: tags.map((String tag) {
+                                return Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20.0),
+                                    ),
+                                    color: Color(0xff1b5e20),
+                                  ),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0, vertical: 5.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      InkWell(
+                                        child: Text(
+                                          '#$tag',
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                        onTap: () {
+                                          //print("$tag selected");
+                                        },
+                                      ),
+                                      const SizedBox(width: 4.0),
+                                      InkWell(
+                                        child: const Icon(
+                                          Icons.cancel,
+                                          size: 14.0,
+                                          color: Colors.white,
+                                        ),
+                                        onTap: () {
+                                          onTagDelete(tag);
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }).toList()),
+                            )
+                          : null,
+                    ),
+                    onChanged: onChanged,
+                    onSubmitted: onSubmitted,
+                );
+              });
+            },
           ),
         ),
         Container(
@@ -75,7 +133,7 @@ class _MyFormWidgetState extends State<MyFormWidget> {
 }
 
 class FeedbackScreen extends StatelessWidget {
-  final TextEditingController inputController = TextEditingController();
+  TextfieldTagsController inputController = TextfieldTagsController();
 
   @override
   Widget build(BuildContext context) {
