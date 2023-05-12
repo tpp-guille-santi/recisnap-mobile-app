@@ -1,16 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
-import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:recyclingapp/widgets/materialCard.dart';
 
 class MaterialsCatalogue extends StatelessWidget {
-  final NeuralNetworkConnector manager = new NeuralNetworkConnector();
 
   Widget getList() {
     return FutureBuilder(
-      future: manager.getMaterialList(),
       builder: (context, AsyncSnapshot<String> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Text('Please wait its loading...');

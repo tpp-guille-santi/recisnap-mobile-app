@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "924203588296",
+    "project_id": "recisnap",
+    "storage_bucket": "recisnap.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924203588296:android:ef587c058c5a74594d23fd",
+        "android_client_info": {
+          "package_name": "mobile.recyclingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924203588296-lifuoamdcdp6jb0cuvpgbgo10k9ivuql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAi7K-aicJq01YWHubSzp-ytuSEzhWr92s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924203588296-lifuoamdcdp6jb0cuvpgbgo10k9ivuql.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "924203588296-ds15qdb96auog5ve8piomb7tg6pbdukk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "mobile.recyclingapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
