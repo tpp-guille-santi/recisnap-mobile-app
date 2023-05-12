@@ -4,7 +4,7 @@ import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:provider/provider.dart';
 import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 
-Widget instructionContent(
+Widget feedbackContent(
   ScrollController sc,
   BuildContext context,
 ) {
