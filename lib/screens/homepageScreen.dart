@@ -66,7 +66,7 @@ class _HomepageState extends State<Homepage> {
         snapPoint: 0.25,
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-        panelBuilder: (sc) => instructionContent(sc, context),
+        panelBuilder: (sc) => instructionContent(sc, context, widget._panelController),
         body: Scaffold(
           body: screens.elementAt(_index),
           bottomNavigationBar: NavigationBar(

@@ -3,12 +3,34 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:provider/provider.dart';
 import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../screens/feedbackScreen.dart';
+
+void navigateToFeedbackScreen(BuildContext context, PanelController panelController) {
+  panelController.close();
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FeedbackScreen(),
+      ));
+}
+
+void sendFeedback(BuildContext context, PanelController panelController) {
+  // TODO: Acá hay que mandar la imagen y la metadata
+  panelController.close();
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: const Text('Another thing!'),
+      duration: const Duration(seconds: 2),
+    ),
+  );
+}
 
 Widget instructionContent(
   ScrollController sc,
   BuildContext context,
+    PanelController panelController
 ) {
   String? materialName =
       context.watch<InstructionMarkdown>().instruction?.materialName;
@@ -62,8 +84,8 @@ Widget instructionContent(
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _button(context, Icons.thumb_down, Colors.red),
-                _button(context, Icons.thumb_up, Colors.green),
+                _button(Icons.thumb_down, Colors.red, ()=> navigateToFeedbackScreen(context, panelController)),
+                _button(Icons.thumb_up, Colors.green, ()=> sendFeedback(context, panelController)),
               ],
             ),
           SizedBox(
@@ -73,15 +95,9 @@ Widget instructionContent(
       ));
 }
 
-void navigateToFeedbackScreen(BuildContext context) {
-  Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => FeedbackScreen(),
-      ));
-}
 
-Widget _button(BuildContext context, IconData icon, Color color) {
+
+Widget _button(IconData icon, Color color, Function() onPressedCallback) {
   return ElevatedButton(
     child: Icon(
       icon,
@@ -92,8 +108,6 @@ Widget _button(BuildContext context, IconData icon, Color color) {
       padding: const EdgeInsets.all(16.0),
       shape: CircleBorder(),
     ),
-    onPressed: () {
-      navigateToFeedbackScreen(context);
-    },
+    onPressed: onPressedCallback,
   );
 }
