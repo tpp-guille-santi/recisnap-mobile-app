@@ -90,4 +90,26 @@ class HttpConnector {
       return [];
     }
   }
+
+  searchInstruction(material, lat, lon) async {
+    var url = '$BACKEND_URL/instructions/search/';
+    Map data = {
+      "material": material,
+      "lat": lat,
+      "lon": lon,
+      "max_distance": MAX_DISTANCE,
+    };
+    var headers = {HttpHeaders.contentTypeHeader: "application/json"};
+    http.Response response = await http.post(Uri.parse(url),
+        body: json.encode(data), headers: headers);
+    if (response.statusCode == 200) {
+      var body = response.body;
+      Instruction instruction = List<Instruction>.from(json
+          .decode(body)
+          .map((instruction) => Instruction.fromJson(instruction)))[0];
+      return instruction;
+    } else {
+      return null;
+    }
+  }
 }
