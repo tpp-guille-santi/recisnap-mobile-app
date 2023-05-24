@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:recyclingapp/entities/instruction.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
@@ -112,8 +114,10 @@ class _HomepageState extends State<Homepage> {
                   //Obtener latitud y longitud
                   List positionValues = await _geolocator.getPosition();
                   //Obtener el markdown del server.
-                  String markdown = await markdownManager.getInstruction(material, positionValues[0], positionValues[1]);
+                  Instruction instruction = await markdownManager.getInstruction(material, positionValues[0], positionValues[1]);                  
                   //Mostrar el resultado al usuario
+                  InstructionMarkdown provider = InstructionMarkdown();
+                  provider.setInstructionMarkdown(instruction);
                 } catch (e) {
                   // If an error occurs, log the error to the console.
                   print(e);

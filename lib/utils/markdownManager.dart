@@ -12,11 +12,10 @@ class MarkdownManager {
     return response;
   }
 
-  Future<String> getInstruction(String material, dynamic latitude, dynamic longitude) async {
+  Future<Instruction> getInstruction(String material, dynamic latitude, dynamic longitude) async {
     HttpConnector networkHelper = HttpConnector();
     var instructionResponse = await networkHelper.searchInstruction(material, latitude, longitude);
-    var response = await networkHelper.getInstructionMarkdown(instructionResponse["id"]);
-    return response;
+    return instructionResponse;
   }
 
   Future<String> getRecyclingInformation() async {
