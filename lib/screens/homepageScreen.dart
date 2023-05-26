@@ -6,18 +6,19 @@ import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
-import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:recyclingapp/entities/instruction.dart';
+import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
-import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
 import 'package:recyclingapp/utils/geolocator.dart';
 import 'package:recyclingapp/utils/markdownManager.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../providers/imageProvider.dart';
 import '../widgets/instructionContent.dart';
 
 class Homepage extends StatefulWidget {
@@ -114,7 +115,20 @@ class _HomepageState extends State<Homepage> {
                   //Obtener latitud y longitud
                   List positionValues = await _geolocator.getPosition();
                   //Obtener el markdown del server.
-                  Instruction instruction = await markdownManager.getInstruction(material, positionValues[0], positionValues[1]);                  
+                  Instruction instruction =
+                      await markdownManager.getInstruction(
+                          material, positionValues[0], positionValues[1]);
+                  context
+                      .read<InstructionMarkdown>()
+                      .resetInstructionMarkdown();
+                  context
+                      .read<InstructionMarkdown>()
+                      .setInstruction(instruction, true);
+                  context
+                      .read<InstructionMarkdown>()
+                      .setInstructionMarkdown(instruction);
+                  widget._panelController.animatePanelToSnapPoint();
+                  context.read<ImagePath>().setImagePath(image.path);
                   //Mostrar el resultado al usuario
                   InstructionMarkdown provider = InstructionMarkdown();
                   provider.setInstructionMarkdown(instruction);
