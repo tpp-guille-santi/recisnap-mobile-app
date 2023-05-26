@@ -7,7 +7,6 @@ import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:recyclingapp/utils/imageManager.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../entities/instruction.dart';
 import '../screens/feedbackScreen.dart';
 
 void navigateToFeedbackScreen(
@@ -23,13 +22,13 @@ void navigateToFeedbackScreen(
 }
 
 void sendFeedback(BuildContext context, PanelController? panelController,
-    Instruction? instruction) {
-  if (instruction == null) {
+    String? materialName) {
+  if (materialName == null) {
     return;
   }
   ImageManager imageManager = new ImageManager();
   var imagePath = context.read<ImagePath>().imagePath;
-  imageManager.saveNewImageWithMetadata(imagePath, instruction, null);
+  imageManager.saveNewImageWithMetadata(imagePath, materialName, null);
   if (panelController != null && panelController.isAttached) {
     panelController.close();
   }
@@ -98,11 +97,8 @@ Widget instructionContent(ScrollController sc, BuildContext context,
               children: <Widget>[
                 _button(Icons.thumb_down, Colors.red,
                     () => navigateToFeedbackScreen(context, panelController)),
-                _button(
-                    Icons.thumb_up,
-                    Colors.green,
-                    () => sendFeedback(context, panelController,
-                        context.watch<InstructionMarkdown>().instruction)),
+                _button(Icons.thumb_up, Colors.green,
+                    () => sendFeedback(context, panelController, materialName)),
               ],
             ),
           SizedBox(

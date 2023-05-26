@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 import '../consts.dart';
+import '../providers/ImageProvider.dart';
+import '../utils/imageManager.dart';
 
 class MyFormWidget extends StatefulWidget {
   final TextfieldTagsController inputController;
@@ -17,10 +19,11 @@ class _MyFormWidgetState extends State<MyFormWidget> {
   String? _selectedValue;
   final List<String> _dropdownValues = MATERIALS;
 
-  void _submitForm() async {
-    // TODO: Acá hay que mandar la imagen y la metadata
-    print(widget.inputController.getTags);
-    print(_selectedValue ?? '');
+  void _submitForm(context) async {
+    var imagePath = context.read<ImagePath>().imagePath;
+    ImageManager imageManager = new ImageManager();
+    imageManager.saveNewImageWithMetadata(
+        imagePath, _selectedValue!, widget.inputController.getTags);
     Navigator.pop(context);
   }
 
@@ -123,7 +126,8 @@ class _MyFormWidgetState extends State<MyFormWidget> {
         Container(
           padding: EdgeInsets.only(top: 16.0), // Add desired padding/margin
           child: ElevatedButton(
-            onPressed: _submitForm,
+            onPressed:
+                _selectedValue == null ? null : () => _submitForm(context),
             child: const Text('Submit'),
           ),
         ),
@@ -133,7 +137,7 @@ class _MyFormWidgetState extends State<MyFormWidget> {
 }
 
 class FeedbackScreen extends StatelessWidget {
-  TextfieldTagsController inputController = TextfieldTagsController();
+  final TextfieldTagsController inputController = TextfieldTagsController();
 
   @override
   Widget build(BuildContext context) {
