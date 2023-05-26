@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:recyclingapp/utils/httpConnector.dart';
 
 import '../entities/instruction.dart';
@@ -12,9 +10,12 @@ class MarkdownManager {
     return response;
   }
 
-  Future<Instruction> getInstruction(String material, dynamic latitude, dynamic longitude) async {
+  Future<Instruction> getInstruction(
+      String material, dynamic latitude, dynamic longitude) async {
     HttpConnector networkHelper = HttpConnector();
-    var instructionResponse = await networkHelper.searchInstruction(material, latitude, longitude);
+    var instructionResponse =
+        await networkHelper.searchInstruction(material, latitude, longitude);
+    await networkHelper.searchInstruction(material, latitude, longitude);
     return instructionResponse;
   }
 

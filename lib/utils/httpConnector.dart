@@ -118,7 +118,7 @@ class HttpConnector {
   searchInstruction(material, lat, lon) async {
     var url = '$BACKEND_URL/instructions/search/';
     Map data = {
-      "material": material,
+      "material_name": material,
       "lat": lat,
       "lon": lon,
       "max_distance": MAX_DISTANCE,
