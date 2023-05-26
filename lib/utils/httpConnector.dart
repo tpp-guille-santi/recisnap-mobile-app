@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 import '../consts.dart';
+import '../entities/image.dart';
 import '../entities/instruction.dart';
 
 class HttpConnector {
@@ -18,6 +19,29 @@ class HttpConnector {
       String serverResponse = await response.stream.bytesToString();
       return jsonDecode(serverResponse);
     } else {
+      print(response.statusCode);
+    }
+  }
+
+  saveImage(String filename, String fileExtension, File image) async {
+    var url = '$BACKEND_URL/images/file/$filename/';
+    var request = new http.MultipartRequest("POST", Uri.parse(url));
+    request.files.add(await http.MultipartFile.fromPath('file', image.path,
+        contentType: new MediaType('image', fileExtension)));
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      String serverResponse = await response.stream.bytesToString();
+      return jsonDecode(serverResponse);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
+  saveImageMetadata(Image image) async {
+    var url = '$BACKEND_URL/images/';
+    var body = json.encode(image.toJson());
+    http.Response response = await http.post(Uri.parse(url), body: body);
+    if (response.statusCode != 201) {
       print(response.statusCode);
     }
   }
