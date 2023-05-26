@@ -24,7 +24,7 @@ class HttpConnector {
   }
 
   saveImage(String filename, String fileExtension, File image) async {
-    var url = '$BACKEND_URL/images/file/$filename';
+    var url = '$BACKEND_URL/images/file/$filename/';
     var request = new http.MultipartRequest("POST", Uri.parse(url));
     request.files.add(await http.MultipartFile.fromPath('file', image.path,
         contentType: new MediaType('image', fileExtension)));
