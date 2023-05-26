@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '924203588296',
     projectId: 'recisnap',
     storageBucket: 'recisnap.appspot.com',
-    iosClientId: '924203588296-ds15qdb96auog5ve8piomb7tg6pbdukk.apps.googleusercontent.com',
+    iosClientId:
+        '924203588296-ds15qdb96auog5ve8piomb7tg6pbdukk.apps.googleusercontent.com',
     iosBundleId: 'mobile.recyclingapp',
   );
 }

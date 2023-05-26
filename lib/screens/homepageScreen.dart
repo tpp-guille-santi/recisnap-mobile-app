@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'package:recyclingapp/providers/imageProvider.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
@@ -17,7 +19,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../widgets/instructionContent.dart';
 
 class Homepage extends StatefulWidget {
-  PanelController _panelController = PanelController();
+  final PanelController _panelController = PanelController();
 
   @override
   _HomepageState createState() => _HomepageState();
@@ -106,6 +108,8 @@ class _HomepageState extends State<Homepage> {
                       await cnnConnector.cataloguePicture(image.path);
                   print(material);
                   print("termine de clasificar");
+
+                  context.read<ImagePath>().setImagePath(image.path);
                   /*var instructions =
                       await markdownManager.getInstructions(material);
                   //Pasar a resultado

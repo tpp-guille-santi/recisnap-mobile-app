@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:provider/provider.dart';
-import 'package:recyclingapp/providers/ImageProvider.dart';
+import 'package:recyclingapp/providers/imageProvider.dart';
 import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:recyclingapp/utils/imageManager.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -22,12 +22,11 @@ void navigateToFeedbackScreen(
 }
 
 void sendFeedback(BuildContext context, PanelController? panelController,
-    String? materialName) {
-  if (materialName == null) {
+    String? materialName, String? imagePath) {
+  if (materialName == null || imagePath == null) {
     return;
   }
   ImageManager imageManager = new ImageManager();
-  var imagePath = context.read<ImagePath>().imagePath;
   imageManager.saveNewImageWithMetadata(imagePath, materialName, null);
   if (panelController != null && panelController.isAttached) {
     panelController.close();
@@ -44,7 +43,9 @@ Widget instructionContent(ScrollController sc, BuildContext context,
     PanelController panelController) {
   String? materialName =
       context.watch<InstructionMarkdown>().instruction?.materialName;
-  bool fromPrediction = context.watch<InstructionMarkdown>().fromPrediction;
+  // TODO: Descomentar esto
+  // bool fromPrediction = context.watch<InstructionMarkdown>().fromPrediction;
+  String? imagePath = context.watch<ImagePath>().imagePath;
   return MediaQuery.removePadding(
       context: context,
       removeTop: true,
@@ -97,8 +98,11 @@ Widget instructionContent(ScrollController sc, BuildContext context,
               children: <Widget>[
                 _button(Icons.thumb_down, Colors.red,
                     () => navigateToFeedbackScreen(context, panelController)),
-                _button(Icons.thumb_up, Colors.green,
-                    () => sendFeedback(context, panelController, materialName)),
+                _button(
+                    Icons.thumb_up,
+                    Colors.green,
+                    () => sendFeedback(
+                        context, panelController, materialName, imagePath)),
               ],
             ),
           SizedBox(
