@@ -2,15 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:provider/provider.dart';
+import 'package:recyclingapp/providers/imageProvider.dart';
 import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
+import 'package:recyclingapp/utils/imageManager.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-Widget instructionContent(
-  ScrollController sc,
-  BuildContext context,
-) {
+import '../screens/feedbackScreen.dart';
+
+void navigateToFeedbackScreen(
+    BuildContext context, PanelController? panelController) {
+  if (panelController != null && panelController.isAttached) {
+    panelController.close();
+  }
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FeedbackScreen(),
+      ));
+}
+
+void sendFeedback(BuildContext context, PanelController? panelController,
+    String? materialName, String? imagePath) {
+  if (materialName == null || imagePath == null) {
+    return;
+  }
+  ImageManager imageManager = new ImageManager();
+  imageManager.saveNewImageWithMetadata(imagePath, materialName, null);
+  if (panelController != null && panelController.isAttached) {
+    panelController.close();
+  }
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: const Text('Another thing!'),
+      duration: const Duration(seconds: 2),
+    ),
+  );
+}
+
+Widget instructionContent(ScrollController sc, BuildContext context,
+    PanelController panelController) {
   String? materialName =
       context.watch<InstructionMarkdown>().instruction?.materialName;
-  bool fromPrediction = context.watch<InstructionMarkdown>().fromPrediction;
+  // TODO: Descomentar esto
+  // bool fromPrediction = context.watch<InstructionMarkdown>().fromPrediction;
+  String? imagePath = context.watch<ImagePath>().imagePath;
   return MediaQuery.removePadding(
       context: context,
       removeTop: true,
@@ -56,12 +91,18 @@ Widget instructionContent(
           SizedBox(
             height: 36.0,
           ),
-          if (fromPrediction)
+          // TODO: reemplazar este true por fromPrediction
+          if (true)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _button(Icons.thumb_down, Colors.red),
-                _button(Icons.thumb_up, Colors.green),
+                _button(Icons.thumb_down, Colors.red,
+                    () => navigateToFeedbackScreen(context, panelController)),
+                _button(
+                    Icons.thumb_up,
+                    Colors.green,
+                    () => sendFeedback(
+                        context, panelController, materialName, imagePath)),
               ],
             ),
           SizedBox(
@@ -71,26 +112,17 @@ Widget instructionContent(
       ));
 }
 
-Widget _button(IconData icon, Color color) {
-  return Column(
-    children: <Widget>[
-      Container(
-        padding: const EdgeInsets.all(16.0),
-        child: Icon(
-          icon,
-          color: Colors.white,
-        ),
-        decoration:
-            BoxDecoration(color: color, shape: BoxShape.circle, boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.15),
-            blurRadius: 8.0,
-          )
-        ]),
-      ),
-      SizedBox(
-        height: 12.0,
-      ),
-    ],
+Widget _button(IconData icon, Color color, Function() onPressedCallback) {
+  return ElevatedButton(
+    child: Icon(
+      icon,
+      color: Colors.white,
+    ),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: color,
+      padding: const EdgeInsets.all(16.0),
+      shape: CircleBorder(),
+    ),
+    onPressed: onPressedCallback,
   );
 }

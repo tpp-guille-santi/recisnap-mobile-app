@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -14,16 +17,11 @@ import 'package:recyclingapp/utils/geolocator.dart';
 import 'package:recyclingapp/utils/markdownManager.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
-import '../widgets/instructionContent.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
 
+import '../widgets/instructionContent.dart';
 
 class Homepage extends StatefulWidget {
-  PanelController _panelController = PanelController();
+  final PanelController _panelController = PanelController();
 
   @override
   _HomepageState createState() => _HomepageState();
@@ -41,7 +39,7 @@ class _HomepageState extends State<Homepage> {
       controller: null,
       future: null,
     ),
-    MaterialsCatalogue(),
+    // MaterialsCatalogue(),
     MapScreen(panelController: null)
   ];
   late NeuralNetworkConnector cnnConnector;
@@ -70,7 +68,8 @@ class _HomepageState extends State<Homepage> {
         snapPoint: 0.25,
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-        panelBuilder: (sc) => instructionContent(sc, context),
+        panelBuilder: (sc) =>
+            instructionContent(sc, context, widget._panelController),
         body: Scaffold(
           body: screens.elementAt(_index),
           bottomNavigationBar: NavigationBar(
@@ -85,11 +84,11 @@ class _HomepageState extends State<Homepage> {
                 icon: Icon(Icons.camera_alt_outlined),
                 label: 'Camera',
               ),
-              NavigationDestination(
-                selectedIcon: Icon(Icons.view_list),
-                icon: Icon(Icons.view_list_outlined),
-                label: 'Catálogo',
-              ),
+              // NavigationDestination(
+              //   selectedIcon: Icon(Icons.view_list),
+              //   icon: Icon(Icons.view_list_outlined),
+              //   label: 'Catálogo',
+              // ),
               NavigationDestination(
                 selectedIcon: Icon(Icons.map),
                 icon: Icon(Icons.map_outlined),
@@ -108,7 +107,8 @@ class _HomepageState extends State<Homepage> {
                   final image = await _controller.takePicture();
                   //Mandar a red
                   print("saque foto");
-                  var material = await cnnConnector.cataloguePicture(image.path);
+                  var material =
+                      await cnnConnector.cataloguePicture(image.path);
                   print(material);
                   print("termine de clasificar");
                   //Obtener latitud y longitud
@@ -142,8 +142,7 @@ class _HomepageState extends State<Homepage> {
     _controller = new CameraController(cameras.first, ResolutionPreset.medium,
         enableAudio: false);
     _initializeControllerFuture = _controller.initialize();
-    var customModel = await FirebaseModelDownloader.instance
-        .getModel(
+    var customModel = await FirebaseModelDownloader.instance.getModel(
         "recisnap-nn",
         FirebaseModelDownloadType.localModelUpdateInBackground,
         FirebaseModelDownloadConditions(
@@ -152,8 +151,7 @@ class _HomepageState extends State<Homepage> {
           androidChargingRequired: false,
           androidWifiRequired: false,
           androidDeviceIdleRequired: false,
-        )
-    );
+        ));
     var downloadedModel = customModel.file;
     //var assetModel = await copyAssetToFile("assets/model.tflite", "my_model.tflite");
     var labelFile = await copyAssetToFile("assets/labels.txt", "my_labels.txt");
@@ -162,7 +160,7 @@ class _HomepageState extends State<Homepage> {
     setState(() {
       screens[1] = CameraScreen(
           future: _initializeControllerFuture, controller: _controller);
-      screens[3] = MapScreen(panelController: widget._panelController);
+      screens[2] = MapScreen(panelController: widget._panelController);
     });
   }
 
@@ -172,7 +170,7 @@ class _HomepageState extends State<Homepage> {
     super.dispose();
   }
 
-  Future<File> copyAssetToFile(String asset, String path) async{
+  Future<File> copyAssetToFile(String asset, String path) async {
     var bytes = await rootBundle.load(asset);
     final buffer = bytes.buffer;
     final directory = await getApplicationDocumentsDirectory();
@@ -180,4 +178,3 @@ class _HomepageState extends State<Homepage> {
         buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
   }
 }
-

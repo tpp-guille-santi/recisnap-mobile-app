@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class MaterialCard extends StatelessWidget {
-  String title;
-  String body;
-  Image image;
+  final String title;
+  final String body;
+  final Image image;
 
   MaterialCard({required this.title, required this.body, required this.image});
 
