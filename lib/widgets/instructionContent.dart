@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:provider/provider.dart';
+import 'package:recyclingapp/providers/ImageProvider.dart';
 import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
+import 'package:recyclingapp/utils/imageManager.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../entities/instruction.dart';
 import '../screens/feedbackScreen.dart';
 
-void navigateToFeedbackScreen(BuildContext context, PanelController? panelController) {
+void navigateToFeedbackScreen(
+    BuildContext context, PanelController? panelController) {
   if (panelController != null && panelController.isAttached) {
     panelController.close();
   }
@@ -18,8 +22,14 @@ void navigateToFeedbackScreen(BuildContext context, PanelController? panelContro
       ));
 }
 
-void sendFeedback(BuildContext context, PanelController? panelController) {
-  // TODO: Acá hay que mandar la imagen y la metadata
+void sendFeedback(BuildContext context, PanelController? panelController,
+    Instruction? instruction) {
+  if (instruction == null) {
+    return;
+  }
+  ImageManager imageManager = new ImageManager();
+  var imagePath = context.read<ImagePath>().imagePath;
+  imageManager.saveNewImageWithMetadata(imagePath, instruction, null);
   if (panelController != null && panelController.isAttached) {
     panelController.close();
   }
@@ -31,11 +41,8 @@ void sendFeedback(BuildContext context, PanelController? panelController) {
   );
 }
 
-Widget instructionContent(
-  ScrollController sc,
-  BuildContext context,
-    PanelController panelController
-) {
+Widget instructionContent(ScrollController sc, BuildContext context,
+    PanelController panelController) {
   String? materialName =
       context.watch<InstructionMarkdown>().instruction?.materialName;
   bool fromPrediction = context.watch<InstructionMarkdown>().fromPrediction;
@@ -84,12 +91,18 @@ Widget instructionContent(
           SizedBox(
             height: 36.0,
           ),
+          // TODO: reemplazar este true por fromPrediction
           if (true)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _button(Icons.thumb_down, Colors.red, ()=> navigateToFeedbackScreen(context, panelController)),
-                _button(Icons.thumb_up, Colors.green, ()=> sendFeedback(context, panelController)),
+                _button(Icons.thumb_down, Colors.red,
+                    () => navigateToFeedbackScreen(context, panelController)),
+                _button(
+                    Icons.thumb_up,
+                    Colors.green,
+                    () => sendFeedback(context, panelController,
+                        context.watch<InstructionMarkdown>().instruction)),
               ],
             ),
           SizedBox(
@@ -98,8 +111,6 @@ Widget instructionContent(
         ],
       ));
 }
-
-
 
 Widget _button(IconData icon, Color color, Function() onPressedCallback) {
   return ElevatedButton(

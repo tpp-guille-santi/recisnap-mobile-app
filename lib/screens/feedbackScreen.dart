@@ -37,64 +37,64 @@ class _MyFormWidgetState extends State<MyFormWidget> {
                 (context, tec, fn, error, onChanged, onSubmitted) {
               return ((context, sc, tags, onTagDelete) {
                 return TextField(
-                    controller: tec,
-                    focusNode: fn,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      hintText:
-                          widget.inputController.hasTags ? '' : "Enter tag...",
-                      errorText: error,
-                      prefixIcon: tags.isNotEmpty
-                          ? SingleChildScrollView(
-                              controller: sc,
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                  children: tags.map((String tag) {
-                                return Container(
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20.0),
-                                    ),
-                                    color: Color(0xff1b5e20),
+                  controller: tec,
+                  focusNode: fn,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText:
+                        widget.inputController.hasTags ? '' : "Enter tag...",
+                    errorText: error,
+                    prefixIcon: tags.isNotEmpty
+                        ? SingleChildScrollView(
+                            controller: sc,
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                                children: tags.map((String tag) {
+                              return Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20.0),
                                   ),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 5.0),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 5.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      InkWell(
-                                        child: Text(
-                                          '#$tag',
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                        onTap: () {
-                                          //print("$tag selected");
-                                        },
+                                  color: Color(0xff1b5e20),
+                                ),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 5.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 5.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    InkWell(
+                                      child: Text(
+                                        '#$tag',
+                                        style: const TextStyle(
+                                            color: Colors.white),
                                       ),
-                                      const SizedBox(width: 4.0),
-                                      InkWell(
-                                        child: const Icon(
-                                          Icons.cancel,
-                                          size: 14.0,
-                                          color: Colors.white,
-                                        ),
-                                        onTap: () {
-                                          onTagDelete(tag);
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }).toList()),
-                            )
-                          : null,
-                    ),
-                    onChanged: onChanged,
-                    onSubmitted: onSubmitted,
+                                      onTap: () {
+                                        //print("$tag selected");
+                                      },
+                                    ),
+                                    const SizedBox(width: 4.0),
+                                    InkWell(
+                                      child: const Icon(
+                                        Icons.cancel,
+                                        size: 14.0,
+                                        color: Colors.white,
+                                      ),
+                                      onTap: () {
+                                        onTagDelete(tag);
+                                      },
+                                    )
+                                  ],
+                                ),
+                              );
+                            }).toList()),
+                          )
+                        : null,
+                  ),
+                  onChanged: onChanged,
+                  onSubmitted: onSubmitted,
                 );
               });
             },

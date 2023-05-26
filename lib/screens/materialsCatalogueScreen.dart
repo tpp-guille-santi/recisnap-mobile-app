@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/widgets/materialCard.dart';
 
 class MaterialsCatalogue extends StatelessWidget {
-
   Widget getList() {
     return FutureBuilder(
       builder: (context, AsyncSnapshot<String> snapshot) {
