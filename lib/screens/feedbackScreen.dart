@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 import '../consts.dart';
-import '../providers/ImageProvider.dart';
+import '../providers/imageProvider.dart';
 import '../utils/imageManager.dart';
 
 class MyFormWidget extends StatefulWidget {
