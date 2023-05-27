@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:provider/provider.dart';
+import 'package:recyclingapp/consts.dart';
 import 'package:recyclingapp/providers/imageProvider.dart';
 import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:recyclingapp/utils/imageManager.dart';
@@ -22,18 +23,18 @@ void navigateToFeedbackScreen(
 }
 
 void sendFeedback(BuildContext context, PanelController? panelController,
-    String? materialName, String? imagePath) {
+    String? materialName, String? imagePath) async {
   if (materialName == null || imagePath == null) {
     return;
   }
   ImageManager imageManager = new ImageManager();
-  imageManager.saveNewImageWithMetadata(imagePath, materialName, null);
+  await imageManager.saveNewImageWithMetadata(imagePath, materialName, null);
   if (panelController != null && panelController.isAttached) {
     panelController.close();
   }
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: const Text('Another thing!'),
+      content: const Text(SENT_FEEDBACK_SUCCESSFULLY),
       duration: const Duration(seconds: 2),
     ),
   );
