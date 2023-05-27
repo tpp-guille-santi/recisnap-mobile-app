@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:recyclingapp/providers/imageProvider.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 import '../consts.dart';
-import '../providers/imageProvider.dart';
 import '../utils/imageManager.dart';
 
 class MyFormWidget extends StatefulWidget {
@@ -19,16 +20,24 @@ class _MyFormWidgetState extends State<MyFormWidget> {
   String? _selectedValue;
   final List<String> _dropdownValues = MATERIALS;
 
-  void _submitForm(context) async {
-    var imagePath = context.read<ImagePath>().imagePath;
-    ImageManager imageManager = new ImageManager();
-    imageManager.saveNewImageWithMetadata(
-        imagePath, _selectedValue!, widget.inputController.getTags);
-    Navigator.pop(context);
+  void _submitForm(context, String? imagePath) async {
+    if (imagePath != null) {
+      ImageManager imageManager = new ImageManager();
+      imageManager.saveNewImageWithMetadata(
+          imagePath, _selectedValue!, widget.inputController.getTags);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(SENT_FEEDBACK_SUCCESSFULLY),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    String? imagePath = context.read<ImagePath>().imagePath;
     return Column(
       children: [
         Container(
@@ -126,8 +135,9 @@ class _MyFormWidgetState extends State<MyFormWidget> {
         Container(
           padding: EdgeInsets.only(top: 16.0), // Add desired padding/margin
           child: ElevatedButton(
-            onPressed:
-                _selectedValue == null ? null : () => _submitForm(context),
+            onPressed: _selectedValue == null
+                ? null
+                : () => _submitForm(context, imagePath),
             child: const Text('Submit'),
           ),
         ),

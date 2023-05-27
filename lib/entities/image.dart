@@ -8,7 +8,7 @@ class Image {
   Image.fromJson(Map<String, dynamic> json)
       : filename = json['filename'],
         materialName = json['material_name'],
-        tags = List<String>.from(json['tags']);
+        tags = json['tags'] != null ? List<String>.from(json['tags']) : null;
 
   Map<String, dynamic> toJson() => {
         'filename': filename,

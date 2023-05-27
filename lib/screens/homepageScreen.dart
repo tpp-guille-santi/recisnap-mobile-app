@@ -5,19 +5,20 @@ import 'package:camera/camera.dart';
 import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:location/location.dart' as location_package;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:recyclingapp/providers/imageProvider.dart';
+import 'package:recyclingapp/entities/instruction.dart';
+import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
-import 'package:recyclingapp/screens/materialsCatalogueScreen.dart';
-import 'package:recyclingapp/utils/geolocator.dart';
 import 'package:recyclingapp/utils/markdownManager.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../providers/imageProvider.dart';
 import '../widgets/instructionContent.dart';
 
 class Homepage extends StatefulWidget {
@@ -31,7 +32,6 @@ class _HomepageState extends State<Homepage> {
   late CameraController _controller;
   bool _showFab = true;
   late Future<void> _initializeControllerFuture;
-  GeolocatorService _geolocator = GeolocatorService();
   int _index = 1;
   List<Widget> screens = [
     InformationScreen(),
@@ -112,11 +112,27 @@ class _HomepageState extends State<Homepage> {
                   print(material);
                   print("termine de clasificar");
                   //Obtener latitud y longitud
-                  List positionValues = await _geolocator.getPosition();
+                  final location_package.Location location =
+                      location_package.Location();
+                  final locationData = await location.getLocation();
                   //Obtener el markdown del server.
-                  String markdown = await markdownManager.getInstruction(material, positionValues[0], positionValues[1]);
+                  Instruction instruction =
+                      await markdownManager.getInstruction(material,
+                          locationData.latitude, locationData.longitude);
+                  context
+                      .read<InstructionMarkdown>()
+                      .resetInstructionMarkdown();
+                  context
+                      .read<InstructionMarkdown>()
+                      .setInstruction(instruction, true);
+                  context
+                      .read<InstructionMarkdown>()
+                      .setInstructionMarkdown(instruction);
+                  widget._panelController.animatePanelToSnapPoint();
                   context.read<ImagePath>().setImagePath(image.path);
                   //Mostrar el resultado al usuario
+                  InstructionMarkdown provider = InstructionMarkdown();
+                  provider.setInstructionMarkdown(instruction);
                 } catch (e) {
                   // If an error occurs, log the error to the console.
                   print(e);
