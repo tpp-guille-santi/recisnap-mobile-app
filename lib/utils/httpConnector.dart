@@ -82,6 +82,19 @@ class HttpConnector {
     }
   }
 
+  getMaterials() async {
+    var url = '$BACKEND_URL/materials/';
+    http.Response response = await http.get(
+      Uri.https(url),
+    );
+    if (response.statusCode == 200) {
+      String data = response.body;
+      return data;
+    } else {
+      print(response.statusCode);
+    }
+  }
+
   getInstructionMarkdown(String id) async {
     var url = '$BACKEND_URL/instructions/$id/markdown/';
     http.Response response = await http.get(Uri.parse(url));
@@ -93,9 +106,10 @@ class HttpConnector {
     }
   }
 
-  searchInstructions(lat, lon) async {
+  searchInstructions(lat, lon, String? materialName) async {
     var url = '$BACKEND_URL/instructions/search/';
     Map data = {
+      "material_name": materialName,
       "lat": lat,
       "lon": lon,
       "max_distance": MAX_DISTANCE,

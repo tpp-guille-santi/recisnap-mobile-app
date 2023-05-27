@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart' as location_package;
 import 'package:permission_handler/permission_handler.dart';
@@ -27,6 +29,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   LatLng _latLng = LatLng(-24.733022, -65.495158);
+  String? _materialName;
   double _zoom = 3.0;
   late MapController _mapController;
   List<Instruction> _instructions = [];
@@ -38,6 +41,14 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     _mapController = MapController();
     centerMap(_mapController);
   }
+
+  static const materials = [
+    "carton",
+    "vidrio",
+    "metal",
+    "papel",
+    "plastico",
+  ];
 
   void _animatedMapMove(LatLng destLocation, double destZoom, double rotation) {
     final latTween = Tween<double>(
@@ -97,33 +108,85 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           MarkerLayer(markers: [
             for (var instruction in _instructions)
               Marker(
-                width: 80,
-                height: 80,
+                width: 60,
+                height: 60,
                 point: LatLng(instruction.lat, instruction.lon),
                 builder: (context) => Transform.rotate(
                     angle: -this._rotation * pi / 180,
-                    child: CustomMarker(onPressed: () {
-                      context
-                          .read<InstructionMarkdown>()
-                          .resetInstructionMarkdown();
-                      context
-                          .read<InstructionMarkdown>()
-                          .setInstruction(instruction, false);
-                      context
-                          .read<InstructionMarkdown>()
-                          .setInstructionMarkdown(instruction);
-                      widget.panelController!.animatePanelToSnapPoint();
-                    })),
+                    child: CustomMarker(
+                        materialName: instruction.materialName,
+                        onPressed: () {
+                          context
+                              .read<InstructionMarkdown>()
+                              .resetInstructionMarkdown();
+                          context
+                              .read<InstructionMarkdown>()
+                              .setInstruction(instruction, false);
+                          context
+                              .read<InstructionMarkdown>()
+                              .setInstructionMarkdown(instruction);
+                          widget.panelController!.animatePanelToSnapPoint();
+                        })),
                 anchorPos: AnchorPos.align(AnchorAlign.center),
               )
           ])
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          centerMap(_mapController);
-        },
-        child: const Icon(Icons.location_searching),
+      floatingActionButton: Stack(
+        children: [
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: FloatingActionButton(
+              onPressed: () {
+                centerMap(_mapController);
+              },
+              child: const Icon(Icons.location_searching),
+            ),
+          ),
+          Positioned(
+            top: 64.0,
+            right: 16.0,
+            child: SpeedDial(
+              backgroundColor: Colors.white,
+              icon: Icons.filter_alt_rounded,
+              direction: SpeedDialDirection.down,
+              children: [
+                SpeedDialChild(
+                    child: Material(
+                      elevation: 0,
+                      color: Colors.transparent,
+                      child: SvgPicture.asset('assets/icons/todos.svg'),
+                    ),
+                    backgroundColor: Colors.transparent,
+                    label: "todos",
+                    elevation: 0,
+                    onTap: () => {
+                          setState(() {
+                            this._materialName = null;
+                          }),
+                          getInstructions()
+                        }),
+                for (var material in materials)
+                  SpeedDialChild(
+                      child: Material(
+                        elevation: 0,
+                        color: Colors.transparent,
+                        child: SvgPicture.asset('assets/icons/$material.svg'),
+                      ),
+                      backgroundColor: Colors.transparent,
+                      label: material,
+                      elevation: 0,
+                      onTap: () => {
+                            setState(() {
+                              this._materialName = material;
+                            }),
+                            getInstructions()
+                          })
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -147,7 +210,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   Future<void> getInstructions() async {
     HttpConnector networkHelper = HttpConnector();
     List<Instruction> instructions = await networkHelper.searchInstructions(
-        _latLng.latitude, _latLng.latitude);
+        _latLng.latitude, _latLng.latitude, _materialName);
     setState(() {
       _instructions = instructions;
     });
