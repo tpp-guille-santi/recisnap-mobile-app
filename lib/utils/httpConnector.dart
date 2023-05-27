@@ -29,18 +29,17 @@ class HttpConnector {
     request.files.add(await http.MultipartFile.fromPath('file', image.path,
         contentType: new MediaType('image', fileExtension)));
     var response = await request.send();
-    if (response.statusCode == 200) {
-      String serverResponse = await response.stream.bytesToString();
-      return jsonDecode(serverResponse);
-    } else {
+    if (response.statusCode != 200) {
       print(response.statusCode);
     }
   }
 
   saveImageMetadata(Image image) async {
     var url = '$BACKEND_URL/images/';
+    var headers = {'Content-Type': 'application/json'};
     var body = json.encode(image.toJson());
-    http.Response response = await http.post(Uri.parse(url), body: body);
+    http.Response response =
+        await http.post(Uri.parse(url), headers: headers, body: body);
     if (response.statusCode != 201) {
       print(response.statusCode);
     }
