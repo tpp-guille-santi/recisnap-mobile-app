@@ -71,10 +71,22 @@ class _HomepageState extends State<Homepage> {
             topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
         panelBuilder: (sc) =>
             instructionContent(sc, context, widget._panelController),
-        body: Stack(
-          children: [
-            Opacity(opacity: 1.0, child: Scaffold(
-              body: screens.elementAt(_index),
+        body: Scaffold(
+              body: Stack(children: [
+                Opacity(
+                  opacity: 1, 
+                  child: Scaffold(
+                    backgroundColor: Colors.white,
+                    body: Center(                      
+                      child: CircularProgressIndicator()
+                    ),
+                  ),
+                ),
+                Opacity(
+                  opacity: _isLoading ? 0.0 : 1.0, 
+                  child: screens.elementAt(_index)
+                ),
+              ],),
               bottomNavigationBar: NavigationBar(
                 destinations: const <NavigationDestination>[
                   NavigationDestination(
@@ -150,11 +162,7 @@ class _HomepageState extends State<Homepage> {
                   child: const Icon(Icons.camera_alt),
                 ),
               ),
-            ),), Opacity(opacity: _isLoading? 1.0: 0.0,
-              child: CircularProgressIndicator(),
             ),
-          ],
-        ),
       ),
     );
   }
