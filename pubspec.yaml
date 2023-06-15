@@ -42,6 +42,8 @@ dependencies:
   tflite: ^1.1.2
   textfield_tags: ^2.0.2
   uuid: ^3.0.7
+  flutter_speed_dial: ^7.0.0
+  flutter_svg: ^2.0.6
 
 dev_dependencies:
   flutter_test:
@@ -53,3 +55,4 @@ flutter:
     - 'assets/greenlogo.png'
     - 'assets/labels.txt'
     - 'assets/model.tflite'
+    - 'assets/icons/'
