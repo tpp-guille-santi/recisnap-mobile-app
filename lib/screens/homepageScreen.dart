@@ -137,6 +137,9 @@ class _HomepageState extends State<Homepage> {
                       Instruction instruction =
                       await markdownManager.getInstruction(material,
                           locationData.latitude, locationData.longitude);
+                      setState(() {
+                        _isLoading = false;
+                      });
                       context
                           .read<InstructionMarkdown>()
                           .resetInstructionMarkdown();
@@ -148,9 +151,6 @@ class _HomepageState extends State<Homepage> {
                           .setInstructionMarkdown(instruction);
                       widget._panelController.animatePanelToSnapPoint();
                       context.read<ImagePath>().setImagePath(image.path);
-                      setState(() {
-                        _isLoading = false;
-                      });
                       //Mostrar el resultado al usuario
                       InstructionMarkdown provider = InstructionMarkdown();
                       provider.setInstructionMarkdown(instruction);
