@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:recyclingapp/providers/imageProvider.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 import '../consts.dart';
+import '../entities/material.dart';
+import '../utils/httpConnector.dart';
 import '../utils/imageManager.dart';
 
 class MyFormWidget extends StatefulWidget {
@@ -18,7 +22,13 @@ class MyFormWidget extends StatefulWidget {
 
 class _MyFormWidgetState extends State<MyFormWidget> {
   String? _selectedValue;
-  final List<String> _dropdownValues = MATERIALS;
+  List<String> _dropdownValues = [];
+
+  @override
+  void initState() {
+    super.initState();
+    setMaterials();
+  }
 
   void _submitForm(context, String? imagePath) async {
     if (imagePath != null) {
@@ -38,8 +48,16 @@ class _MyFormWidgetState extends State<MyFormWidget> {
   @override
   Widget build(BuildContext context) {
     String? imagePath = context.read<ImagePath>().imagePath;
-    return Column(
+    return ListView(
       children: [
+        Center(
+          child: Image.file(
+            File(imagePath!),
+            width: 200, // Set the desired width
+            height: 200, // Set the desired height
+            fit: BoxFit.cover,
+          ),
+        ),
         Container(
           padding: EdgeInsets.only(bottom: 16.0), // Add desired padding/margin
           child: TextFieldTags(
@@ -143,6 +161,15 @@ class _MyFormWidgetState extends State<MyFormWidget> {
         ),
       ],
     );
+  }
+
+  Future<void> setMaterials() async {
+    HttpConnector httpConnector = HttpConnector();
+    List<RecyclableMaterial> materials = await httpConnector.getMaterialsList();
+    setState(() {
+      _dropdownValues = materials.map((material) => material.name).toList();
+      _dropdownValues.add('otro');
+    });
   }
 }
 
