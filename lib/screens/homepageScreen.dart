@@ -72,97 +72,96 @@ class _HomepageState extends State<Homepage> {
         panelBuilder: (sc) =>
             instructionContent(sc, context, widget._panelController),
         body: Scaffold(
-              body: Stack(children: [
-                Opacity(
-                  opacity: 1, 
-                  child: Scaffold(
-                    backgroundColor: Colors.white,
-                    body: Center(                      
-                      child: CircularProgressIndicator()
-                    ),
-                  ),
+          body: Stack(
+            children: [
+              Opacity(
+                opacity: 1,
+                child: Scaffold(
+                  backgroundColor: Colors.white,
+                  body: Center(child: CircularProgressIndicator()),
                 ),
-                Opacity(
-                  opacity: _isLoading ? 0.0 : 1.0, 
-                  child: screens.elementAt(_index)
-                ),
-              ],),
-              bottomNavigationBar: NavigationBar(
-                destinations: const <NavigationDestination>[
-                  NavigationDestination(
-                    selectedIcon: Icon(Icons.school),
-                    icon: Icon(Icons.school_outlined),
-                    label: 'Reciclaje',
-                  ),
-                  NavigationDestination(
-                    selectedIcon: Icon(Icons.camera_alt),
-                    icon: Icon(Icons.camera_alt_outlined),
-                    label: 'Camera',
-                  ),
-                  // NavigationDestination(
-                  //   selectedIcon: Icon(Icons.view_list),
-                  //   icon: Icon(Icons.view_list_outlined),
-                  //   label: 'Catálogo',
-                  // ),
-                  NavigationDestination(
-                    selectedIcon: Icon(Icons.map),
-                    icon: Icon(Icons.map_outlined),
-                    label: 'Mapa',
-                  ),
-                ],
-                onDestinationSelected: _onDestinationSelected,
-                selectedIndex: _index,
               ),
-              floatingActionButton: Visibility(
-                visible: _showFab,
-                child: FloatingActionButton(
-                  onPressed: () async {
-                    try {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      await _initializeControllerFuture;
-                      final image = await _controller.takePicture();
-                      //Mandar a red
-                      print("saque foto");
-                      var material =
+              Opacity(
+                  opacity: _isLoading ? 0.0 : 1.0,
+                  child: screens.elementAt(_index)),
+            ],
+          ),
+          bottomNavigationBar: NavigationBar(
+            destinations: const <NavigationDestination>[
+              NavigationDestination(
+                selectedIcon: Icon(Icons.school),
+                icon: Icon(Icons.school_outlined),
+                label: 'Reciclaje',
+              ),
+              NavigationDestination(
+                selectedIcon: Icon(Icons.camera_alt),
+                icon: Icon(Icons.camera_alt_outlined),
+                label: 'Camera',
+              ),
+              // NavigationDestination(
+              //   selectedIcon: Icon(Icons.view_list),
+              //   icon: Icon(Icons.view_list_outlined),
+              //   label: 'Catálogo',
+              // ),
+              NavigationDestination(
+                selectedIcon: Icon(Icons.map),
+                icon: Icon(Icons.map_outlined),
+                label: 'Mapa',
+              ),
+            ],
+            onDestinationSelected: _onDestinationSelected,
+            selectedIndex: _index,
+          ),
+          floatingActionButton: Visibility(
+            visible: _showFab,
+            child: FloatingActionButton(
+              onPressed: () async {
+                try {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  await _initializeControllerFuture;
+                  final image = await _controller.takePicture();
+                  //Mandar a red
+                  print("saque foto");
+                  var material =
                       await cnnConnector.cataloguePicture(image.path);
-                      print(material);
-                      print("termine de clasificar");
-                      //Obtener latitud y longitud
-                      final location_package.Location location =
+                  print(material);
+                  print("termine de clasificar");
+                  //Obtener latitud y longitud
+                  final location_package.Location location =
                       location_package.Location();
-                      final locationData = await location.getLocation();
-                      //Obtener el markdown del server.
-                      Instruction instruction =
+                  final locationData = await location.getLocation();
+                  //Obtener el markdown del server.
+                  Instruction instruction =
                       await markdownManager.getInstruction(material,
                           locationData.latitude, locationData.longitude);
-                      setState(() {
-                        _isLoading = false;
-                      });
-                      context
-                          .read<InstructionMarkdown>()
-                          .resetInstructionMarkdown();
-                      context
-                          .read<InstructionMarkdown>()
-                          .setInstruction(instruction, true);
-                      context
-                          .read<InstructionMarkdown>()
-                          .setInstructionMarkdown(instruction);
-                      widget._panelController.animatePanelToSnapPoint();
-                      context.read<ImagePath>().setImagePath(image.path);
-                      //Mostrar el resultado al usuario
-                      InstructionMarkdown provider = InstructionMarkdown();
-                      provider.setInstructionMarkdown(instruction);
-                    } catch (e) {
-                      // If an error occurs, log the error to the console.
-                      print(e);
-                    }
-                  },
-                  child: const Icon(Icons.camera_alt),
-                ),
-              ),
+                  setState(() {
+                    _isLoading = false;
+                  });
+                  context
+                      .read<InstructionMarkdown>()
+                      .resetInstructionMarkdown();
+                  context
+                      .read<InstructionMarkdown>()
+                      .setInstruction(instruction, true);
+                  context
+                      .read<InstructionMarkdown>()
+                      .setInstructionMarkdown(instruction);
+                  widget._panelController.animatePanelToSnapPoint();
+                  context.read<ImagePath>().setImagePath(image.path);
+                  //Mostrar el resultado al usuario
+                  InstructionMarkdown provider = InstructionMarkdown();
+                  provider.setInstructionMarkdown(instruction);
+                } catch (e) {
+                  // If an error occurs, log the error to the console.
+                  print(e);
+                }
+              },
+              child: const Icon(Icons.camera_alt),
             ),
+          ),
+        ),
       ),
     );
   }
