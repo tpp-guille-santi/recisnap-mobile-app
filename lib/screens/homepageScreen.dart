@@ -107,8 +107,7 @@ class _HomepageState extends State<Homepage> {
                   final image = await _controller.takePicture();
                   //Mandar a red
                   print("saque foto");
-                  var material =
-                      await cnnConnector.cataloguePicture(image.path);
+                  var material = cnnConnector.cataloguePicture(image.path);
                   print(material);
                   print("termine de clasificar");
                   //Obtener latitud y longitud
@@ -170,7 +169,7 @@ class _HomepageState extends State<Homepage> {
     var downloadedModel = customModel.file;
     //var assetModel = await copyAssetToFile("assets/model.tflite", "my_model.tflite");
     var labelFile = await copyAssetToFile("assets/labels.txt", "my_labels.txt");
-    this.cnnConnector = NeuralNetworkConnector(downloadedModel, labelFile);
+    this.cnnConnector = NeuralNetworkConnector(downloadedModel);
 
     setState(() {
       screens[1] = CameraScreen(
