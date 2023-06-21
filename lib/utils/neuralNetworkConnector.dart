@@ -1,56 +1,59 @@
 import 'dart:io';
 
-import 'package:recyclingapp/utils/httpConnector.dart';
-import 'package:tflite/tflite.dart';
+import 'package:image/image.dart' as img;
+import 'package:tflite_flutter/tflite_flutter.dart';
+
+import '../entities/material.dart';
+import 'httpConnector.dart';
 
 class NeuralNetworkConnector {
-  NeuralNetworkConnector(File modelFile, File labelFile) {
-    buildModel(modelFile, labelFile);
+  late Interpreter interpreter;
+  late List<String> labels;
+
+  NeuralNetworkConnector(File modelFile) {
+    buildModel(modelFile);
   }
 
-  Future<String> cataloguePicture(String imagePath) async {
-    print("hora de catalogar");
-    var results = await Tflite.runModelOnImage(
-      path: imagePath,
-      numResults: 6,
-      threshold: 0.05,
-      imageMean: 127.5,
-      imageStd: 127.5,
+  Future<void> buildModel(File modelFile) async {
+    final options = InterpreterOptions();
+    this.interpreter = Interpreter.fromFile(modelFile, options: options);
+    HttpConnector httpConnector = HttpConnector();
+    List<RecyclableMaterial> materials = await httpConnector.getMaterialsList();
+    this.labels = materials.map((material) => material.name).toList();
+  }
+
+  String cataloguePicture(String imagePath) {
+    final imageData = File(imagePath).readAsBytesSync();
+    img.Image? image = img.decodeImage(imageData);
+    final imageInput = img.copyResize(
+      image!,
+      width: 224,
+      height: 224,
     );
-    if (results == null) {
-      return "Ups!";
-    }
-    var labelInfo = results[0];
-    print(labelInfo);
-    return labelInfo["label"];
+    final imageMatrix = List.generate(
+      imageInput.height,
+      (y) => List.generate(
+        imageInput.width,
+        (x) {
+          final pixel = imageInput.getPixel(x, y);
+          return [pixel.r, pixel.g, pixel.b];
+        },
+      ),
+    );
+    return runInference(imageMatrix);
   }
 
-  Future<String> getMaterialList() async {
-    HttpConnector networkHelper = HttpConnector();
-
-    var response = await networkHelper.getMaterialsList();
-    print(response);
-    return response;
-  }
-
-  Future buildModel(File modelFile, File labelFile) async {
-    print(modelFile.path);
-    try {
-      print("Armando modelo");
-      var res = await Tflite.loadModel(
-          model: modelFile.path,
-          labels: labelFile.path,
-          numThreads: 1,
-          // defaults to 1
-          isAsset: false,
-          // defaults to true, set to false to load resources outside assets
-          useGpuDelegate:
-              false // defaults to false, set to true to use GPU delegate
-          );
-      print(res);
-    } on Exception catch (e) {
-      print(e);
-      print('Failed to load model.');
-    }
+  String runInference(List<List<List<num>>> imageMatrix) {
+    final input = [imageMatrix];
+    final output = List.generate(1, (index) => List.filled(6, 0.0));
+    interpreter.run(input, output);
+    final result = output.first;
+    int maxIndex = result
+        .asMap()
+        .entries
+        .reduce((maxEntry, entry) =>
+            entry.value > maxEntry.value ? entry : maxEntry)
+        .key;
+    return labels[maxIndex];
   }
 }
