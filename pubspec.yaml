@@ -39,7 +39,6 @@ dependencies:
   provider: ^6.0.5
   firebase_core: ^2.7.1
   firebase_ml_model_downloader: ^0.2.0+12
-  tflite: ^1.1.2
   textfield_tags: ^2.0.2
   uuid: ^3.0.7
   flutter_speed_dial: ^7.0.0
