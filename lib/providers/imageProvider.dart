@@ -6,7 +6,7 @@ class ImagePath with ChangeNotifier {
   String? get imagePath => _imagePath;
 
   void resetImagePath() {
-    _imagePath = "";
+    _imagePath = null;
     notifyListeners();
   }
 

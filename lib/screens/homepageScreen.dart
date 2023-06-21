@@ -5,20 +5,14 @@ import 'package:camera/camera.dart';
 import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:location/location.dart' as location_package;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
-import 'package:recyclingapp/entities/instruction.dart';
-import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
-import 'package:recyclingapp/utils/markdownManager.dart';
 import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../providers/imageProvider.dart';
 import '../widgets/instructionContent.dart';
 
 class Homepage extends StatefulWidget {
@@ -29,22 +23,14 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  late CameraController _controller;
-  bool _showFab = true;
-  late Future<void> _initializeControllerFuture;
-  int _index = 1;
+  late CameraController cameraController;
+  int _index = 0;
   List<Widget> screens = [
     InformationScreen(),
-    CameraScreen(
-      controller: null,
-      future: null,
-    ),
-    // MaterialsCatalogue(),
-    MapScreen(panelController: null)
+    InformationScreen(),
+    InformationScreen(),
   ];
   late NeuralNetworkConnector cnnConnector;
-  MarkdownManager markdownManager = new MarkdownManager();
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -55,7 +41,6 @@ class _HomepageState extends State<Homepage> {
   void _onDestinationSelected(int index) {
     setState(() {
       _index = index;
-      _showFab = (index == 1);
     });
   }
 
@@ -72,15 +57,7 @@ class _HomepageState extends State<Homepage> {
         panelBuilder: (sc) =>
             instructionContent(sc, context, widget._panelController),
         body: Scaffold(
-          body: Stack(
-            children: [
-              screens.elementAt(_index),
-              if (_isLoading)
-                Center(
-                  child: CircularProgressIndicator(),
-                ),
-            ],
-          ),
+          body: screens.elementAt(_index),
           bottomNavigationBar: NavigationBar(
             destinations: const <NavigationDestination>[
               NavigationDestination(
@@ -93,11 +70,6 @@ class _HomepageState extends State<Homepage> {
                 icon: Icon(Icons.camera_alt_outlined),
                 label: 'Camera',
               ),
-              // NavigationDestination(
-              //   selectedIcon: Icon(Icons.view_list),
-              //   icon: Icon(Icons.view_list_outlined),
-              //   label: 'Catálogo',
-              // ),
               NavigationDestination(
                 selectedIcon: Icon(Icons.map),
                 icon: Icon(Icons.map_outlined),
@@ -106,55 +78,6 @@ class _HomepageState extends State<Homepage> {
             ],
             onDestinationSelected: _onDestinationSelected,
             selectedIndex: _index,
-          ),
-          floatingActionButton: Visibility(
-            visible: _showFab,
-            child: FloatingActionButton(
-              onPressed: () async {
-                try {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  await _initializeControllerFuture;
-                  final image = await _controller.takePicture();
-                  //Mandar a red
-                  print("saque foto");
-                  var material =
-                      await cnnConnector.cataloguePicture(image.path);
-                  print(material);
-                  print("termine de clasificar");
-                  //Obtener latitud y longitud
-                  final location_package.Location location =
-                      location_package.Location();
-                  final locationData = await location.getLocation();
-                  //Obtener el markdown del server.
-                  Instruction instruction =
-                      await markdownManager.getInstruction(material,
-                          locationData.latitude, locationData.longitude);
-                  setState(() {
-                    _isLoading = false;
-                  });
-                  context
-                      .read<InstructionMarkdown>()
-                      .resetInstructionMarkdown();
-                  context
-                      .read<InstructionMarkdown>()
-                      .setInstruction(instruction, true);
-                  context
-                      .read<InstructionMarkdown>()
-                      .setInstructionMarkdown(instruction);
-                  widget._panelController.animatePanelToSnapPoint();
-                  context.read<ImagePath>().setImagePath(image.path);
-                  //Mostrar el resultado al usuario
-                  InstructionMarkdown provider = InstructionMarkdown();
-                  provider.setInstructionMarkdown(instruction);
-                } catch (e) {
-                  // If an error occurs, log the error to the console.
-                  print(e);
-                }
-              },
-              child: const Icon(Icons.camera_alt),
-            ),
           ),
         ),
       ),
@@ -169,9 +92,10 @@ class _HomepageState extends State<Homepage> {
       exit(0);
     }
     var cameras = await availableCameras();
-    _controller = new CameraController(cameras.first, ResolutionPreset.medium,
+    cameraController = new CameraController(
+        cameras.first, ResolutionPreset.medium,
         enableAudio: false);
-    _initializeControllerFuture = _controller.initialize();
+    Future<void> cameraControllerFuture = cameraController.initialize();
     var customModel = await FirebaseModelDownloader.instance.getModel(
         "recisnap-nn",
         FirebaseModelDownloadType.localModelUpdateInBackground,
@@ -189,14 +113,17 @@ class _HomepageState extends State<Homepage> {
 
     setState(() {
       screens[1] = CameraScreen(
-          future: _initializeControllerFuture, controller: _controller);
+          panelController: widget._panelController,
+          cnnConnector: cnnConnector,
+          cameraController: cameraController,
+          cameraControllerFuture: cameraControllerFuture);
       screens[2] = MapScreen(panelController: widget._panelController);
     });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    cameraController.dispose();
     super.dispose();
   }
 
