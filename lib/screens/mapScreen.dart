@@ -10,6 +10,7 @@ import 'package:location/location.dart' as location_package;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:recyclingapp/entities/instruction.dart';
+import 'package:recyclingapp/entities/material.dart';
 import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -33,22 +34,16 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   double _zoom = 3.0;
   late MapController _mapController;
   List<Instruction> _instructions = [];
+  List<RecyclableMaterial> _materials = [];
   double _rotation = 0;
 
   @override
   void initState() {
     super.initState();
+    setMaterials();
     _mapController = MapController();
     centerMap(_mapController);
   }
-
-  static const materials = [
-    "carton",
-    "vidrio",
-    "metal",
-    "papel",
-    "plastico",
-  ];
 
   void _animatedMapMove(LatLng destLocation, double destZoom, double rotation) {
     final latTween = Tween<double>(
@@ -167,19 +162,20 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                           }),
                           getInstructions()
                         }),
-                for (var material in materials)
+                for (var material in _materials)
                   SpeedDialChild(
                       child: Material(
                         elevation: 0,
                         color: Colors.transparent,
-                        child: SvgPicture.asset('assets/icons/$material.svg'),
+                        child: SvgPicture.asset(
+                            'assets/icons/${material.name}.svg'),
                       ),
                       backgroundColor: Colors.transparent,
-                      label: material,
+                      label: material.name,
                       elevation: 0,
                       onTap: () => {
                             setState(() {
-                              this._materialName = material;
+                              this._materialName = material.name;
                             }),
                             getInstructions()
                           })
@@ -213,6 +209,14 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         _latLng.latitude, _latLng.latitude, _materialName);
     setState(() {
       _instructions = instructions;
+    });
+  }
+
+  Future<void> setMaterials() async {
+    HttpConnector httpConnector = HttpConnector();
+    List<RecyclableMaterial> materials = await httpConnector.getMaterialsList();
+    setState(() {
+      _materials = materials;
     });
   }
 }
