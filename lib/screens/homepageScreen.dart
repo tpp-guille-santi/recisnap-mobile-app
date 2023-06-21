@@ -74,16 +74,11 @@ class _HomepageState extends State<Homepage> {
         body: Scaffold(
           body: Stack(
             children: [
-              Opacity(
-                opacity: 1,
-                child: Scaffold(
-                  backgroundColor: Colors.white,
-                  body: Center(child: CircularProgressIndicator()),
+              screens.elementAt(_index),
+              if (_isLoading)
+                Center(
+                  child: CircularProgressIndicator(),
                 ),
-              ),
-              Opacity(
-                  opacity: _isLoading ? 0.0 : 1.0,
-                  child: screens.elementAt(_index)),
             ],
           ),
           bottomNavigationBar: NavigationBar(
