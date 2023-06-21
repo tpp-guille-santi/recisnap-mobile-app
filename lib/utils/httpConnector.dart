@@ -7,6 +7,7 @@ import 'package:http_parser/http_parser.dart';
 import '../consts.dart';
 import '../entities/image.dart';
 import '../entities/instruction.dart';
+import '../entities/material.dart';
 
 class HttpConnector {
   getData(File image) async {
@@ -71,12 +72,14 @@ class HttpConnector {
   }
 
   getMaterialsList() async {
-    http.Response response = await http.get(
-      Uri.https('peaceful-refuge-34158.herokuapp.com', '/materials'),
-    );
+    var url = '$BACKEND_URL/materials/';
+    http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      String data = response.body;
-      return data;
+      var body = response.body;
+      List<RecyclableMaterial> materials = List<RecyclableMaterial>.from(json
+          .decode(body)
+          .map((materials) => RecyclableMaterial.fromJson(materials)));
+      return materials;
     } else {
       print(response.statusCode);
     }
