@@ -19,13 +19,3 @@ const String SENT_FEEDBACK_SUCCESSFULLY = 'Ya mandamos tu feedback!';
 
 const String BACKEND_URL = 'https://recisnap-1-y9816629.deta.app';
 const int MAX_DISTANCE = 2000000000;
-
-const MATERIALS = [
-  "cardboard",
-  "glass",
-  "metal",
-  "paper",
-  "plastic",
-  "trash",
-  "other"
-];

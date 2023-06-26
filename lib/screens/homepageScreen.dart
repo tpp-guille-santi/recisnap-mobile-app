@@ -107,9 +107,7 @@ class _HomepageState extends State<Homepage> {
           androidDeviceIdleRequired: false,
         ));
     var downloadedModel = customModel.file;
-    //var assetModel = await copyAssetToFile("assets/model.tflite", "my_model.tflite");
-    var labelFile = await copyAssetToFile("assets/labels.txt", "my_labels.txt");
-    this.cnnConnector = NeuralNetworkConnector(downloadedModel, labelFile);
+    this.cnnConnector = NeuralNetworkConnector(downloadedModel);
 
     setState(() {
       screens[1] = CameraScreen(
