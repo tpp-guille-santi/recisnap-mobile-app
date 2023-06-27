@@ -22,7 +22,7 @@ class MapScreen extends StatefulWidget {
     required this.panelController,
   });
 
-  final PanelController? panelController;
+  final PanelController panelController;
 
   @override
   State<StatefulWidget> createState() => _MapScreenState();
@@ -86,7 +86,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             this._rotation = this._mapController.rotation;
           }),
           onTap: (tapPosition, point) => {
-            widget.panelController!.close(),
+            widget.panelController.close(),
           },
         ),
         nonRotatedChildren: [
@@ -120,7 +120,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                           context
                               .read<InstructionMarkdown>()
                               .setInstructionMarkdown(instruction);
-                          widget.panelController!.animatePanelToSnapPoint();
+                          widget.panelController.animatePanelToSnapPoint();
                         })),
                 anchorPos: AnchorPos.align(AnchorAlign.center),
               )

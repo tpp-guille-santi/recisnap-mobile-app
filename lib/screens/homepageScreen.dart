@@ -1,60 +1,47 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:location/location.dart' as location_package;
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
-import 'package:recyclingapp/entities/instruction.dart';
-import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
-import 'package:recyclingapp/utils/markdownManager.dart';
-import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../providers/imageProvider.dart';
+import '../utils/neuralNetworkConnector.dart';
 import '../widgets/instructionContent.dart';
+import 'loadingScreen.dart';
 
 class Homepage extends StatefulWidget {
-  final PanelController _panelController = PanelController();
-
   @override
   _HomepageState createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
-  late CameraController _controller;
-  bool _showFab = true;
-  late Future<void> _initializeControllerFuture;
-  int _index = 1;
-  List<Widget> screens = [
-    InformationScreen(),
-    CameraScreen(
-      controller: null,
-      future: null,
-    ),
-    // MaterialsCatalogue(),
-    MapScreen(panelController: null)
-  ];
+  final PanelController panelController = PanelController();
+
+  late CameraController cameraController;
   late NeuralNetworkConnector cnnConnector;
-  MarkdownManager markdownManager = new MarkdownManager();
+
+  int index = 1;
+
+  List<Widget> screens = [];
 
   @override
   void initState() {
     super.initState();
+    screens = [
+      InformationScreen(),
+      LoadingScreen(),
+      MapScreen(panelController: panelController),
+    ];
     initialize();
   }
 
-  void _onDestinationSelected(int index) {
+  void _onDestinationSelected(int newIndex) {
     setState(() {
-      _index = index;
-      _showFab = (index == 1);
+      index = newIndex;
     });
   }
 
@@ -62,16 +49,15 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SlidingUpPanel(
-        controller: widget._panelController,
+        controller: panelController,
         minHeight: 0,
         maxHeight: MediaQuery.of(context).size.height,
         snapPoint: 0.25,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-        panelBuilder: (sc) =>
-            instructionContent(sc, context, widget._panelController),
+        panelBuilder: (sc) => instructionContent(sc, context, panelController),
         body: Scaffold(
-          body: screens.elementAt(_index),
+          body: screens[index],
           bottomNavigationBar: NavigationBar(
             destinations: const <NavigationDestination>[
               NavigationDestination(
@@ -84,11 +70,6 @@ class _HomepageState extends State<Homepage> {
                 icon: Icon(Icons.camera_alt_outlined),
                 label: 'Camera',
               ),
-              // NavigationDestination(
-              //   selectedIcon: Icon(Icons.view_list),
-              //   icon: Icon(Icons.view_list_outlined),
-              //   label: 'Catálogo',
-              // ),
               NavigationDestination(
                 selectedIcon: Icon(Icons.map),
                 icon: Icon(Icons.map_outlined),
@@ -96,49 +77,7 @@ class _HomepageState extends State<Homepage> {
               ),
             ],
             onDestinationSelected: _onDestinationSelected,
-            selectedIndex: _index,
-          ),
-          floatingActionButton: Visibility(
-            visible: _showFab,
-            child: FloatingActionButton(
-              onPressed: () async {
-                try {
-                  await _initializeControllerFuture;
-                  final image = await _controller.takePicture();
-                  //Mandar a red
-                  print("saque foto");
-                  var material = cnnConnector.cataloguePicture(image.path);
-                  print(material);
-                  print("termine de clasificar");
-                  //Obtener latitud y longitud
-                  final location_package.Location location =
-                      location_package.Location();
-                  final locationData = await location.getLocation();
-                  //Obtener el markdown del server.
-                  Instruction instruction =
-                      await markdownManager.getInstruction(material,
-                          locationData.latitude, locationData.longitude);
-                  context
-                      .read<InstructionMarkdown>()
-                      .resetInstructionMarkdown();
-                  context
-                      .read<InstructionMarkdown>()
-                      .setInstruction(instruction, true);
-                  context
-                      .read<InstructionMarkdown>()
-                      .setInstructionMarkdown(instruction);
-                  widget._panelController.animatePanelToSnapPoint();
-                  context.read<ImagePath>().setImagePath(image.path);
-                  //Mostrar el resultado al usuario
-                  InstructionMarkdown provider = InstructionMarkdown();
-                  provider.setInstructionMarkdown(instruction);
-                } catch (e) {
-                  // If an error occurs, log the error to the console.
-                  print(e);
-                }
-              },
-              child: const Icon(Icons.camera_alt),
-            ),
+            selectedIndex: index,
           ),
         ),
       ),
@@ -146,17 +85,18 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> initialize() async {
-    if (await Permission.camera.request().isDenied) {
+    if (await Permission.camera.request().isDenied ||
+        await Permission.locationWhenInUse.request().isDenied) {
       exit(0);
     }
-    if (await Permission.locationWhenInUse.request().isDenied) {
-      exit(0);
-    }
-    var cameras = await availableCameras();
-    _controller = new CameraController(cameras.first, ResolutionPreset.medium,
-        enableAudio: false);
-    _initializeControllerFuture = _controller.initialize();
-    var customModel = await FirebaseModelDownloader.instance.getModel(
+    final cameras = await availableCameras();
+    cameraController = CameraController(
+      cameras.first,
+      ResolutionPreset.medium,
+      enableAudio: false,
+    );
+    await cameraController.initialize();
+    final customModel = await FirebaseModelDownloader.instance.getModel(
         "recisnap-nn",
         FirebaseModelDownloadType.localModelUpdateInBackground,
         FirebaseModelDownloadConditions(
@@ -166,27 +106,24 @@ class _HomepageState extends State<Homepage> {
           androidWifiRequired: false,
           androidDeviceIdleRequired: false,
         ));
-    var downloadedModel = customModel.file;
-    this.cnnConnector = NeuralNetworkConnector(downloadedModel);
-
+    final downloadedModel = customModel.file;
+    cnnConnector = NeuralNetworkConnector(downloadedModel);
     setState(() {
-      screens[1] = CameraScreen(
-          future: _initializeControllerFuture, controller: _controller);
-      screens[2] = MapScreen(panelController: widget._panelController);
+      screens = [
+        InformationScreen(),
+        CameraScreen(
+          panelController: panelController,
+          cameraController: cameraController,
+          cnnConnector: cnnConnector,
+        ),
+        MapScreen(panelController: panelController),
+      ];
     });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    cameraController.dispose();
     super.dispose();
-  }
-
-  Future<File> copyAssetToFile(String asset, String path) async {
-    var bytes = await rootBundle.load(asset);
-    final buffer = bytes.buffer;
-    final directory = await getApplicationDocumentsDirectory();
-    return new File('${directory.path}/$path').writeAsBytes(
-        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
   }
 }

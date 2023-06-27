@@ -8,7 +8,8 @@ class InformationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Container(
+      child: Scaffold(
+          body: Container(
         child: FutureBuilder<String>(
           future: markdownManager.getRecyclingInformation(),
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -24,7 +25,7 @@ class InformationScreen extends StatelessWidget {
             }
           },
         ),
-      ),
+      )),
     );
   }
 }
