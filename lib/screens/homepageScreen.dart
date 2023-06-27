@@ -1,46 +1,47 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
-import 'package:recyclingapp/utils/neuralNetworkConnector.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../utils/neuralNetworkConnector.dart';
 import '../widgets/instructionContent.dart';
+import 'loadingScreen.dart';
 
 class Homepage extends StatefulWidget {
-  final PanelController _panelController = PanelController();
-
   @override
   _HomepageState createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
+  final PanelController panelController = PanelController();
+
   late CameraController cameraController;
-  int _index = 0;
-  List<Widget> screens = [
-    InformationScreen(),
-    InformationScreen(),
-    InformationScreen(),
-  ];
   late NeuralNetworkConnector cnnConnector;
+
+  int index = 1;
+
+  List<Widget> screens = [];
 
   @override
   void initState() {
     super.initState();
+    screens = [
+      InformationScreen(),
+      LoadingScreen(),
+      MapScreen(panelController: panelController),
+    ];
     initialize();
   }
 
-  void _onDestinationSelected(int index) {
+  void _onDestinationSelected(int newIndex) {
     setState(() {
-      _index = index;
+      index = newIndex;
     });
   }
 
@@ -48,16 +49,15 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SlidingUpPanel(
-        controller: widget._panelController,
+        controller: panelController,
         minHeight: 0,
         maxHeight: MediaQuery.of(context).size.height,
         snapPoint: 0.25,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-        panelBuilder: (sc) =>
-            instructionContent(sc, context, widget._panelController),
+        panelBuilder: (sc) => instructionContent(sc, context, panelController),
         body: Scaffold(
-          body: screens.elementAt(_index),
+          body: screens[index],
           bottomNavigationBar: NavigationBar(
             destinations: const <NavigationDestination>[
               NavigationDestination(
@@ -77,7 +77,7 @@ class _HomepageState extends State<Homepage> {
               ),
             ],
             onDestinationSelected: _onDestinationSelected,
-            selectedIndex: _index,
+            selectedIndex: index,
           ),
         ),
       ),
@@ -85,18 +85,18 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> initialize() async {
-    if (await Permission.camera.request().isDenied) {
+    if (await Permission.camera.request().isDenied ||
+        await Permission.locationWhenInUse.request().isDenied) {
       exit(0);
     }
-    if (await Permission.locationWhenInUse.request().isDenied) {
-      exit(0);
-    }
-    var cameras = await availableCameras();
-    cameraController = new CameraController(
-        cameras.first, ResolutionPreset.medium,
-        enableAudio: false);
-    Future<void> cameraControllerFuture = cameraController.initialize();
-    var customModel = await FirebaseModelDownloader.instance.getModel(
+    final cameras = await availableCameras();
+    cameraController = CameraController(
+      cameras.first,
+      ResolutionPreset.medium,
+      enableAudio: false,
+    );
+    await cameraController.initialize();
+    final customModel = await FirebaseModelDownloader.instance.getModel(
         "recisnap-nn",
         FirebaseModelDownloadType.localModelUpdateInBackground,
         FirebaseModelDownloadConditions(
@@ -106,16 +106,18 @@ class _HomepageState extends State<Homepage> {
           androidWifiRequired: false,
           androidDeviceIdleRequired: false,
         ));
-    var downloadedModel = customModel.file;
-    this.cnnConnector = NeuralNetworkConnector(downloadedModel);
-
+    final downloadedModel = customModel.file;
+    cnnConnector = NeuralNetworkConnector(downloadedModel);
     setState(() {
-      screens[1] = CameraScreen(
-          panelController: widget._panelController,
-          cnnConnector: cnnConnector,
+      screens = [
+        InformationScreen(),
+        CameraScreen(
+          panelController: panelController,
           cameraController: cameraController,
-          cameraControllerFuture: cameraControllerFuture);
-      screens[2] = MapScreen(panelController: widget._panelController);
+          cnnConnector: cnnConnector,
+        ),
+        MapScreen(panelController: panelController),
+      ];
     });
   }
 
@@ -123,13 +125,5 @@ class _HomepageState extends State<Homepage> {
   void dispose() {
     cameraController.dispose();
     super.dispose();
-  }
-
-  Future<File> copyAssetToFile(String asset, String path) async {
-    var bytes = await rootBundle.load(asset);
-    final buffer = bytes.buffer;
-    final directory = await getApplicationDocumentsDirectory();
-    return new File('${directory.path}/$path').writeAsBytes(
-        buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
   }
 }
