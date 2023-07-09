@@ -6,12 +6,12 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:location/location.dart' as location_package;
+import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:recyclingapp/entities/instruction.dart';
+import 'package:recyclingapp/entities/instructionMetadata.dart';
 import 'package:recyclingapp/entities/material.dart';
-import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
+import 'package:recyclingapp/providers/instructionProvider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../utils/httpConnector.dart';
@@ -20,20 +20,23 @@ import '../widgets/customMarker.dart';
 class MapScreen extends StatefulWidget {
   MapScreen({
     required this.panelController,
+    this.instructionMetadata,
   });
 
   final PanelController panelController;
+  final InstructionMetadata? instructionMetadata;
 
   @override
   State<StatefulWidget> createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
+  final HttpConnector httpConnector = HttpConnector();
   LatLng _latLng = LatLng(-24.733022, -65.495158);
   String? _materialName;
   double _zoom = 3.0;
   late MapController _mapController;
-  List<Instruction> _instructions = [];
+  List<InstructionMetadata> _instructions = [];
   List<RecyclableMaterial> _materials = [];
   double _rotation = 0;
 
@@ -42,7 +45,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     super.initState();
     setMaterials();
     _mapController = MapController();
-    centerMap(_mapController);
+    centerMap(_mapController, widget.instructionMetadata);
   }
 
   void _animatedMapMove(LatLng destLocation, double destZoom, double rotation) {
@@ -101,26 +104,25 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               userAgentPackageName: 'com.example.app',
               keepBuffer: 20),
           MarkerLayer(markers: [
-            for (var instruction in _instructions)
+            for (var instructionMetadata in _instructions)
               Marker(
                 width: 60,
                 height: 60,
-                point: LatLng(instruction.lat, instruction.lon),
+                point: LatLng(instructionMetadata.lat, instructionMetadata.lon),
                 builder: (context) => Transform.rotate(
                     angle: -this._rotation * pi / 180,
                     child: CustomMarker(
-                        materialName: instruction.materialName,
-                        onPressed: () {
-                          context
-                              .read<InstructionMarkdown>()
-                              .resetInstructionMarkdown();
-                          context
-                              .read<InstructionMarkdown>()
-                              .setInstruction(instruction, false);
-                          context
-                              .read<InstructionMarkdown>()
-                              .setInstructionMarkdown(instruction);
+                        materialName: instructionMetadata.materialName,
+                        onPressed: () async {
+                          context.read<Instruction>().resetInstruction();
                           widget.panelController.animatePanelToSnapPoint();
+                          String instructionMarkdown = await httpConnector
+                              .getInstructionMarkdown(instructionMetadata.id);
+                          context.read<Instruction>().setInstructionMetadata(
+                              instructionMetadata, false);
+                          context
+                              .read<Instruction>()
+                              .setInstructionMarkdown(instructionMarkdown);
                         })),
                 anchorPos: AnchorPos.align(AnchorAlign.center),
               )
@@ -187,33 +189,44 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     );
   }
 
-  Future<void> centerMap(mapController) async {
+  Future<void> centerMap(mapController,
+      [InstructionMetadata? instructionMetadata]) async {
     if (await Permission.locationWhenInUse.request().isDenied) {
       exit(0);
     }
-    final location_package.Location location = location_package.Location();
-    final locationData = await location.getLocation();
-    final latLng = LatLng(locationData.latitude!, locationData.longitude!);
-    _animatedMapMove(latLng, 15.0, 0);
-    setState(() {
-      this._latLng = latLng;
-      this._rotation = this._mapController.rotation;
-    });
+    if (instructionMetadata != null) {
+      final latLng = LatLng(
+          widget.instructionMetadata!.lat, widget.instructionMetadata!.lon);
+      _animatedMapMove(latLng, 15.0, 0);
+      setState(() {
+        _latLng = latLng;
+        _rotation = _mapController.rotation;
+        _materialName = instructionMetadata.materialName;
+      });
+    } else {
+      final Location location = Location();
+      final locationData = await location.getLocation();
+      final latLng = LatLng(locationData.latitude!, locationData.longitude!);
+      _animatedMapMove(latLng, 15.0, 0);
+      setState(() {
+        _latLng = latLng;
+        _rotation = _mapController.rotation;
+      });
+    }
 
     getInstructions();
   }
 
   Future<void> getInstructions() async {
     HttpConnector networkHelper = HttpConnector();
-    List<Instruction> instructions = await networkHelper.searchInstructions(
-        _latLng.latitude, _latLng.latitude, _materialName);
+    List<InstructionMetadata> instructions = await networkHelper
+        .searchInstructions(_latLng.latitude, _latLng.latitude, _materialName);
     setState(() {
       _instructions = instructions;
     });
   }
 
   Future<void> setMaterials() async {
-    HttpConnector httpConnector = HttpConnector();
     List<RecyclableMaterial> materials = await httpConnector.getMaterialsList();
     setState(() {
       _materials = materials;
