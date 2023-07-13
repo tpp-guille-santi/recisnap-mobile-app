@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:recyclingapp/providers/imageProvider.dart';
-import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
+import 'package:recyclingapp/providers/instructionProvider.dart';
 import 'package:recyclingapp/screens/homepageScreen.dart';
 
 import 'firebase_options.dart';
@@ -15,7 +15,7 @@ Future<void> main() async {
       [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (_) => InstructionMarkdown()),
+      ChangeNotifierProvider(create: (_) => Instruction()),
       ChangeNotifierProvider(create: (_) => ImagePath())
     ],
     child: MyApp(),

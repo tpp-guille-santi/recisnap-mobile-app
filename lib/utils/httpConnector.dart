@@ -6,7 +6,7 @@ import 'package:http_parser/http_parser.dart';
 
 import '../consts.dart';
 import '../entities/image.dart';
-import '../entities/instruction.dart';
+import '../entities/instructionMetadata.dart';
 import '../entities/material.dart';
 
 class HttpConnector {
@@ -59,7 +59,7 @@ class HttpConnector {
     }
   }
 
-  getRecyclingMarkdown() async {
+  getHomeMarkdown() async {
     http.Response response = await http.get(Uri.parse(
         "https://raw.githubusercontent.com/tpp-guille-santi/materials/main/recycling.md"));
 
@@ -122,9 +122,10 @@ class HttpConnector {
         body: json.encode(data), headers: headers);
     if (response.statusCode == 200) {
       var body = response.body;
-      List<Instruction> instructions = List<Instruction>.from(json
-          .decode(body)
-          .map((instruction) => Instruction.fromJson(instruction)));
+      List<InstructionMetadata> instructions = List<InstructionMetadata>.from(
+          json
+              .decode(body)
+              .map((instruction) => InstructionMetadata.fromJson(instruction)));
       return instructions;
     } else {
       return [];
@@ -144,9 +145,9 @@ class HttpConnector {
         body: json.encode(data), headers: headers);
     if (response.statusCode == 200) {
       var body = response.body;
-      Instruction instruction = List<Instruction>.from(json
+      InstructionMetadata instruction = List<InstructionMetadata>.from(json
           .decode(body)
-          .map((instruction) => Instruction.fromJson(instruction)))[0];
+          .map((instruction) => InstructionMetadata.fromJson(instruction)))[0];
       return instruction;
     } else {
       return null;

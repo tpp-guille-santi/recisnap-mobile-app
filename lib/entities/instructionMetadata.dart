@@ -1,4 +1,4 @@
-class Instruction {
+class InstructionMetadata {
   final String id;
   final String materialName;
   final bool editable;
@@ -8,10 +8,10 @@ class Instruction {
   final String? departamento;
   final String? municipio;
 
-  Instruction(this.materialName, this.editable, this.lat, this.lon,
+  InstructionMetadata(this.materialName, this.editable, this.lat, this.lon,
       this.provincia, this.departamento, this.municipio, this.id);
 
-  Instruction.fromJson(Map<String, dynamic> json)
+  InstructionMetadata.fromJson(Map<String, dynamic> json)
       : materialName = json['material_name'],
         editable = json['editable'],
         lat = json['lat'],

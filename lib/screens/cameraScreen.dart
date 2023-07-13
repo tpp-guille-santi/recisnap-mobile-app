@@ -7,10 +7,10 @@ import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../entities/instruction.dart';
+import '../entities/instructionMetadata.dart';
 import '../providers/imageProvider.dart';
-import '../providers/instructionMarkdownProvider.dart';
-import '../utils/markdownManager.dart';
+import '../providers/instructionProvider.dart';
+import '../utils/httpConnector.dart';
 import '../utils/neuralNetworkConnector.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
-  MarkdownManager markdownManager = MarkdownManager();
+  final HttpConnector httpConnector = HttpConnector();
   bool isLoading = false;
 
   String? imagePath;
@@ -86,24 +86,25 @@ class _CameraScreenState extends State<CameraScreen> {
               final material = widget.cnnConnector.cataloguePicture(image.path);
               final location = Location();
               final locationData = await location.getLocation();
-              Instruction instruction = await markdownManager.getInstruction(
+              InstructionMetadata instructionMetadata =
+                  await httpConnector.searchInstruction(
                 material,
                 locationData.latitude,
                 locationData.longitude,
               );
-              context.read<InstructionMarkdown>().resetInstructionMarkdown();
+              String instructionMarkdown = await httpConnector
+                  .getInstructionMarkdown(instructionMetadata.id);
+              context.read<Instruction>().resetInstruction();
               context
-                  .read<InstructionMarkdown>()
-                  .setInstruction(instruction, true);
+                  .read<Instruction>()
+                  .setInstructionMetadata(instructionMetadata, true);
               context
-                  .read<InstructionMarkdown>()
-                  .setInstructionMarkdown(instruction);
+                  .read<Instruction>()
+                  .setInstructionMarkdown(instructionMarkdown);
               setState(() {
                 isLoading = false;
               });
               widget.panelController.animatePanelToSnapPoint();
-              InstructionMarkdown provider = InstructionMarkdown();
-              provider.setInstructionMarkdown(instruction);
             } catch (e) {
               print(e);
             }

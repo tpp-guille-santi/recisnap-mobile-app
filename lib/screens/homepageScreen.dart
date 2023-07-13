@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:recyclingapp/entities/instructionMetadata.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
@@ -45,6 +46,16 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
+  void _onSwitchToMapScreen(InstructionMetadata instructionMetadata) {
+    setState(() {
+      index = 2;
+      screens[2] = MapScreen(
+          panelController: panelController,
+          instructionMetadata: instructionMetadata);
+    });
+    panelController.animatePanelToSnapPoint();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +66,8 @@ class _HomepageState extends State<Homepage> {
         snapPoint: 0.25,
         borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-        panelBuilder: (sc) => instructionContent(sc, context, panelController),
+        panelBuilder: (sc) => instructionContent(
+            sc, context, panelController, _onSwitchToMapScreen),
         body: Scaffold(
           body: screens[index],
           bottomNavigationBar: NavigationBar(

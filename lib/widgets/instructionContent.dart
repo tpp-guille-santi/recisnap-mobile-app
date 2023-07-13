@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_native_splash/cli_commands.dart';
 import 'package:provider/provider.dart';
 import 'package:recyclingapp/consts.dart';
+import 'package:recyclingapp/entities/instructionMetadata.dart';
 import 'package:recyclingapp/providers/imageProvider.dart';
-import 'package:recyclingapp/providers/instructionMarkdownProvider.dart';
+import 'package:recyclingapp/providers/instructionProvider.dart';
 import 'package:recyclingapp/utils/imageManager.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -40,11 +40,13 @@ void sendFeedback(BuildContext context, PanelController? panelController,
   );
 }
 
+typedef void OnScreenChangeCallback(InstructionMetadata instructionMetadata);
+
 Widget instructionContent(ScrollController sc, BuildContext context,
-    PanelController panelController) {
-  String? materialName =
-      context.watch<InstructionMarkdown>().instruction?.materialName;
-  bool fromPrediction = context.watch<InstructionMarkdown>().fromPrediction;
+    PanelController panelController, OnScreenChangeCallback onScreenChange) {
+  InstructionMetadata? instructionMetadata =
+      context.watch<Instruction>().instructionMetadata;
+  bool fromPrediction = context.watch<Instruction>().fromPrediction;
   String? imagePath = context.watch<ImagePath>().imagePath;
   return MediaQuery.removePadding(
       context: context,
@@ -74,7 +76,9 @@ Widget instructionContent(ScrollController sc, BuildContext context,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                'Material ${materialName != null ? materialName.capitalize() : ''}',
+                instructionMetadata == null
+                    ? ''
+                    : 'Material ${instructionMetadata.materialName}',
                 style: TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 24.0,
@@ -85,7 +89,7 @@ Widget instructionContent(ScrollController sc, BuildContext context,
           Container(
             padding: new EdgeInsets.all(20.0),
             child: MarkdownBody(
-              data: context.watch<InstructionMarkdown>().instructionMarkdown,
+              data: context.watch<Instruction>().instructionMarkdown,
             ),
           ),
           SizedBox(
@@ -95,13 +99,28 @@ Widget instructionContent(ScrollController sc, BuildContext context,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _button(Icons.thumb_down, Colors.red,
-                    () => navigateToFeedbackScreen(context, panelController)),
-                _button(
-                    Icons.thumb_up,
-                    Colors.green,
-                    () => sendFeedback(
-                        context, panelController, materialName, imagePath)),
+                if (instructionMetadata != null)
+                  _button(Icons.thumb_down, Colors.red,
+                      () => navigateToFeedbackScreen(context, panelController)),
+                if (instructionMetadata != null)
+                  _button(
+                      Icons.thumb_up,
+                      Colors.green,
+                      () => sendFeedback(context, panelController,
+                          instructionMetadata.materialName, imagePath)),
+                if (instructionMetadata != null)
+                  _button(
+                    Icons.map_outlined,
+                    Colors.blueGrey,
+                    () {
+                      onScreenChange(instructionMetadata);
+                      sc.animateTo(
+                        0,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                  ),
               ],
             ),
           SizedBox(
