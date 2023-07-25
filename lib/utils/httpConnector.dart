@@ -59,7 +59,7 @@ class HttpConnector {
     }
   }
 
-  getHomeMarkdown() async {
+  Future<String> getHomeMarkdown() async {
     http.Response response = await http.get(Uri.parse(
         "https://raw.githubusercontent.com/tpp-guille-santi/materials/main/recycling.md"));
 
@@ -68,6 +68,7 @@ class HttpConnector {
       return data;
     } else {
       print(response.statusCode);
+      return "";
     }
   }
 
