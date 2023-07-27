@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -28,10 +29,59 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
+  bool _showFocusCircle = false;
+  double _x = 0;
+  double _y = 0;
   final HttpConnector httpConnector = HttpConnector();
   bool isLoading = false;
 
   String? imagePath;
+
+  Future<void> _onTap(TapUpDetails details) async {
+    if (widget.cameraController.value.isInitialized) {
+      // Your existing onTap code here
+      context.read<ImagePath>().resetImagePath();
+      setState(() {
+        imagePath = null;
+      });
+      if (widget.panelController.isAttached) {
+        widget.panelController.close();
+      }
+
+      // Tap-to-focus functionality
+      setState(() {
+        _showFocusCircle = true;
+        _x = details.localPosition.dx;
+        _y = details.localPosition.dy;
+      });
+
+      double fullWidth = MediaQuery.of(context).size.width;
+      double cameraHeight =
+          fullWidth / widget.cameraController.value.aspectRatio;
+
+      double xp = _x / fullWidth;
+      double yp = _y / cameraHeight;
+
+      // Ensure the coordinates are within the range (0,0) to (1,1)
+      xp = xp.clamp(0.0, 1.0);
+      yp = yp.clamp(0.0, 1.0);
+
+      Offset point = Offset(xp, yp);
+
+      // Manually focus
+      await widget.cameraController.setFocusPoint(point);
+
+      // Manually set light exposure
+      widget.cameraController.setExposurePoint(point);
+
+      // Use a Timer to hide the focus circle after 2 seconds
+      Timer(const Duration(seconds: 2), () {
+        setState(() {
+          _showFocusCircle = false;
+        });
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +90,7 @@ class _CameraScreenState extends State<CameraScreen> {
             MediaQuery.of(context).size.aspectRatio);
     return Scaffold(
         body: GestureDetector(
-            onTap: () {
-              context.read<ImagePath>().resetImagePath();
-              setState(() {
-                imagePath = null;
-              });
-              if (widget.panelController.isAttached) {
-                widget.panelController.close();
-              }
-            },
+            onTapUp: _onTap,
             child: Stack(
               children: [
                 Transform.scale(
@@ -56,6 +98,19 @@ class _CameraScreenState extends State<CameraScreen> {
                   alignment: Alignment.topCenter,
                   child: CameraPreview(widget.cameraController),
                 ),
+                if (_showFocusCircle)
+                  Positioned(
+                    top: _y - 20,
+                    left: _x - 20,
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 1.5),
+                      ),
+                    ),
+                  ),
                 if (imagePath != null)
                   Center(
                     child: Image.file(
