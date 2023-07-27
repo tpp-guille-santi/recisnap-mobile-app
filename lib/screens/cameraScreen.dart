@@ -38,8 +38,8 @@ class _CameraScreenState extends State<CameraScreen> {
   String? imagePath;
 
   Future<void> _onTap(TapUpDetails details) async {
-    if (widget.cameraController.value.isInitialized) {
-      // Your existing onTap code here
+    if (!isLoading && widget.cameraController.value.isInitialized) {
+      // Remove widget and hide instructions on tap functionality
       context.read<ImagePath>().resetImagePath();
       setState(() {
         imagePath = null;
@@ -56,8 +56,7 @@ class _CameraScreenState extends State<CameraScreen> {
       });
 
       double fullWidth = MediaQuery.of(context).size.width;
-      double cameraHeight =
-          fullWidth / widget.cameraController.value.aspectRatio;
+      double cameraHeight = MediaQuery.of(context).size.height;
 
       double xp = _x / fullWidth;
       double yp = _y / cameraHeight;
@@ -93,11 +92,19 @@ class _CameraScreenState extends State<CameraScreen> {
             onTapUp: _onTap,
             child: Stack(
               children: [
+                // 0. Transparent overlay to capture taps in whole screen
+                Container(
+                  color: Colors.transparent,
+                ),
+
+                // 1. Camera Preview
                 Transform.scale(
                   scale: scale,
                   alignment: Alignment.topCenter,
                   child: CameraPreview(widget.cameraController),
                 ),
+
+                // 2. Focus Circle
                 if (_showFocusCircle)
                   Positioned(
                     top: _y - 20,
