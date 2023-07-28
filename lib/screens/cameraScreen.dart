@@ -27,11 +27,19 @@ class CameraScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _CameraScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class _CameraScreenState extends State<CameraScreen>
+    with WidgetsBindingObserver {
   final HttpConnector httpConnector = HttpConnector();
   bool isLoading = false;
 
   String? imagePath;
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      await widget.cameraController.initialize();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,5 +119,17 @@ class _CameraScreenState extends State<CameraScreen> {
           },
           child: const Icon(Icons.camera_alt),
         ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }
