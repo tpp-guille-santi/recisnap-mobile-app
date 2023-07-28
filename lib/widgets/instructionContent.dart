@@ -114,11 +114,7 @@ Widget instructionContent(ScrollController sc, BuildContext context,
                     Colors.blueGrey,
                     () {
                       onScreenChange(instructionMetadata);
-                      sc.animateTo(
-                        0,
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeInOut,
-                      );
+                      sc.jumpTo(0);
                     },
                   ),
               ],

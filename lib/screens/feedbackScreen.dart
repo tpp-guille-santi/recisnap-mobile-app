@@ -70,7 +70,8 @@ class _MyFormWidgetState extends State<MyFormWidget> {
             items: _dropdownValues
                 .map((value) => DropdownMenuItem(
                       value: value,
-                      child: Text(value),
+                      child: Text(
+                          "${value[0].toUpperCase()}${value.substring(1)}"),
                     ))
                 .toList(),
             decoration: const InputDecoration(
@@ -165,7 +166,7 @@ class _MyFormWidgetState extends State<MyFormWidget> {
             onPressed: _selectedValue == null
                 ? null
                 : () => _submitForm(context, imagePath),
-            child: const Text('Submit'),
+            child: const Text('Enviar'),
           ),
         ),
       ],
