@@ -21,11 +21,9 @@ class MapScreen extends StatefulWidget {
   MapScreen({
     required this.panelController,
     required this.scrollController,
-    this.instructionMetadata,
   });
   final ScrollController scrollController;
   final PanelController panelController;
-  final InstructionMetadata? instructionMetadata;
 
   @override
   State<StatefulWidget> createState() => _MapScreenState();
@@ -40,13 +38,20 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   List<InstructionMetadata> _instructions = [];
   List<RecyclableMaterial> _materials = [];
   double _rotation = 0;
+  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
     setMaterials();
     _mapController = MapController();
-    centerMap(_mapController, widget.instructionMetadata);
+    centerMap(_mapController);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   void _animatedMapMove(LatLng destLocation, double destZoom, double rotation) {
@@ -57,24 +62,17 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     final zoomTween = Tween<double>(begin: _mapController.zoom, end: destZoom);
     final rotationTween =
         Tween<double>(begin: _mapController.rotation, end: rotation);
-    final controller = AnimationController(
+    _controller = AnimationController(
         duration: const Duration(milliseconds: 500), vsync: this);
     final Animation<double> animation =
-        CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
-    controller.addListener(() {
+        CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
+    _controller.addListener(() {
       _mapController.move(
           LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
           zoomTween.evaluate(animation));
       _mapController.rotate(rotationTween.evaluate(animation));
     });
-    animation.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        controller.dispose();
-      } else if (status == AnimationStatus.dismissed) {
-        controller.dispose();
-      }
-    });
-    controller.forward();
+    _controller.forward();
   }
 
   @override
@@ -116,8 +114,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                         materialName: instructionMetadata.materialName,
                         onPressed: () async {
                           context.read<Instruction>().resetInstruction();
-                          widget.panelController.animatePanelToSnapPoint();
                           widget.scrollController.jumpTo(0);
+                          widget.panelController.animatePanelToSnapPoint();
                           String instructionMarkdown = await httpConnector
                               .getInstructionMarkdown(instructionMetadata.id);
                           context.read<Instruction>().setInstructionMetadata(
@@ -191,14 +189,16 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     );
   }
 
-  Future<void> centerMap(mapController,
-      [InstructionMetadata? instructionMetadata]) async {
+  Future<void> centerMap(mapController) async {
     if (await Permission.locationWhenInUse.request().isDenied) {
       exit(0);
     }
-    if (instructionMetadata != null) {
-      final latLng = LatLng(
-          widget.instructionMetadata!.lat, widget.instructionMetadata!.lon);
+    InstructionMetadata? instructionMetadata =
+        context.read<Instruction>().instructionMetadata;
+    bool firstLoad = context.read<Instruction>().firstLoad;
+    if (instructionMetadata != null && firstLoad) {
+      context.read<Instruction>().firstLoad = false;
+      final latLng = LatLng(instructionMetadata.lat, instructionMetadata.lon);
       _animatedMapMove(latLng, 15.0, 0);
       setState(() {
         _latLng = latLng;

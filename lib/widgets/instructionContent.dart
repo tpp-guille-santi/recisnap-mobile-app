@@ -40,7 +40,7 @@ void sendFeedback(BuildContext context, PanelController? panelController,
   );
 }
 
-typedef void OnScreenChangeCallback(InstructionMetadata instructionMetadata);
+typedef void OnScreenChangeCallback(BuildContext context);
 
 Widget instructionContent(
     ScrollController scrollController,
@@ -116,8 +116,7 @@ Widget instructionContent(
                     Icons.map_outlined,
                     Colors.blueGrey,
                     () {
-                      onScreenChange(instructionMetadata);
-                      scrollController.jumpTo(0);
+                      onScreenChange(context);
                     },
                   ),
               ],

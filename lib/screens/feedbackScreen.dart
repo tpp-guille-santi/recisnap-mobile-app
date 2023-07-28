@@ -86,7 +86,7 @@ class _MyFormWidgetState extends State<MyFormWidget> {
                 EdgeInsets.only(bottom: 16.0), // Add desired padding/margin
             child: TextFieldTags(
               textfieldTagsController: widget.inputController,
-              textSeparators: const [' ', ','],
+              textSeparators: const [','],
               inputfieldBuilder:
                   (context, tec, fn, error, onChanged, onSubmitted) {
                 return ((context, sc, tags, onTagDelete) {

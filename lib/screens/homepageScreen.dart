@@ -4,12 +4,13 @@ import 'package:camera/camera.dart';
 import 'package:firebase_ml_model_downloader/firebase_ml_model_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:recyclingapp/entities/instructionMetadata.dart';
+import 'package:provider/provider.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
+import '../providers/instructionProvider.dart';
 import '../utils/neuralNetworkConnector.dart';
 import '../widgets/instructionContent.dart';
 import 'loadingScreen.dart';
@@ -50,16 +51,13 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
-  void _onSwitchToMapScreen(InstructionMetadata instructionMetadata) {
+  void _onSwitchToMapScreen(BuildContext context) {
     setState(() {
       index = 2;
-      screens[2] = MapScreen(
-          panelController: panelController,
-          scrollController: scrollController,
-          instructionMetadata: instructionMetadata);
     });
-    panelController.animatePanelToSnapPoint();
+    context.read<Instruction>().firstLoad = true;
     scrollController.jumpTo(0);
+    panelController.animatePanelToSnapPoint();
   }
 
   @override
