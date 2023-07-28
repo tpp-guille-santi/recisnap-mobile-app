@@ -9,7 +9,7 @@ class MaterialsCatalogue extends StatelessWidget {
     return FutureBuilder(
       builder: (context, AsyncSnapshot<String> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text('Please wait its loading...');
+          return Text('Cargando...');
         }
 
         List<dynamic> result = jsonDecode(snapshot.data!);
