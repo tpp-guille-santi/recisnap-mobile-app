@@ -6,7 +6,7 @@ import 'package:recyclingapp/entities/instructionMetadata.dart';
 import 'package:recyclingapp/providers/imageProvider.dart';
 import 'package:recyclingapp/providers/instructionProvider.dart';
 import 'package:recyclingapp/utils/imageManager.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 import '../screens/feedbackScreen.dart';
 
@@ -42,8 +42,11 @@ void sendFeedback(BuildContext context, PanelController? panelController,
 
 typedef void OnScreenChangeCallback(InstructionMetadata instructionMetadata);
 
-Widget instructionContent(ScrollController sc, BuildContext context,
-    PanelController panelController, OnScreenChangeCallback onScreenChange) {
+Widget instructionContent(
+    ScrollController scrollController,
+    BuildContext context,
+    PanelController panelController,
+    OnScreenChangeCallback onScreenChange) {
   InstructionMetadata? instructionMetadata =
       context.watch<Instruction>().instructionMetadata;
   bool fromPrediction = context.watch<Instruction>().fromPrediction;
@@ -52,7 +55,7 @@ Widget instructionContent(ScrollController sc, BuildContext context,
       context: context,
       removeTop: true,
       child: ListView(
-        controller: sc,
+        controller: scrollController,
         children: <Widget>[
           SizedBox(
             height: 12.0,
@@ -114,11 +117,7 @@ Widget instructionContent(ScrollController sc, BuildContext context,
                     Colors.blueGrey,
                     () {
                       onScreenChange(instructionMetadata);
-                      sc.animateTo(
-                        0,
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeInOut,
-                      );
+                      scrollController.jumpTo(0);
                     },
                   ),
               ],
