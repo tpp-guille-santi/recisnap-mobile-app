@@ -114,6 +114,8 @@ Widget instructionContent(ScrollController sc, BuildContext context,
                     Colors.blueGrey,
                     () {
                       onScreenChange(instructionMetadata);
+                      // Con esto hacemos que haga scroll de la instrucción
+                      // hasta arriba en el cambio de pantalla.
                       sc.animateTo(
                         0,
                         duration: const Duration(milliseconds: 500),

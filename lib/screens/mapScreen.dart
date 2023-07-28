@@ -24,7 +24,7 @@ class MapScreen extends StatefulWidget {
   });
 
   final PanelController panelController;
-  final InstructionMetadata? instructionMetadata;
+  InstructionMetadata? instructionMetadata;
 
   @override
   State<StatefulWidget> createState() => _MapScreenState();
@@ -202,6 +202,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         _latLng = latLng;
         _rotation = _mapController.rotation;
         _materialName = instructionMetadata.materialName;
+        widget.instructionMetadata = null;
       });
     } else {
       final Location location = Location();
