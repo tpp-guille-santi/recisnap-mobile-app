@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:recyclingapp/entities/instructionMetadata.dart';
 import 'package:recyclingapp/entities/material.dart';
 import 'package:recyclingapp/providers/instructionProvider.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 import '../utils/httpConnector.dart';
 import '../widgets/customMarker.dart';
@@ -20,9 +20,10 @@ import '../widgets/customMarker.dart';
 class MapScreen extends StatefulWidget {
   MapScreen({
     required this.panelController,
+    required this.scrollController,
     this.instructionMetadata,
   });
-
+  final ScrollController scrollController;
   final PanelController panelController;
   InstructionMetadata? instructionMetadata;
 
@@ -116,6 +117,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                         onPressed: () async {
                           context.read<Instruction>().resetInstruction();
                           widget.panelController.animatePanelToSnapPoint();
+                          widget.scrollController.jumpTo(0);
                           String instructionMarkdown = await httpConnector
                               .getInstructionMarkdown(instructionMetadata.id);
                           context.read<Instruction>().setInstructionMetadata(
