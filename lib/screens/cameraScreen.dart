@@ -176,8 +176,8 @@ class _CameraScreenState extends State<CameraScreen>
               setState(() {
                 isLoading = false;
               });
-              widget.panelController.animatePanelToSnapPoint();
               widget.scrollController.jumpTo(0);
+              widget.panelController.animatePanelToSnapPoint();
             } catch (e) {
               print(e);
             }

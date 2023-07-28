@@ -21,11 +21,9 @@ class MapScreen extends StatefulWidget {
   MapScreen({
     required this.panelController,
     required this.scrollController,
-    this.instructionMetadata,
   });
   final ScrollController scrollController;
   final PanelController panelController;
-  InstructionMetadata? instructionMetadata;
 
   @override
   State<StatefulWidget> createState() => _MapScreenState();
@@ -47,7 +45,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     super.initState();
     setMaterials();
     _mapController = MapController();
-    centerMap(_mapController, widget.instructionMetadata);
+    centerMap(_mapController);
   }
 
   @override
@@ -116,8 +114,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                         materialName: instructionMetadata.materialName,
                         onPressed: () async {
                           context.read<Instruction>().resetInstruction();
-                          widget.panelController.animatePanelToSnapPoint();
                           widget.scrollController.jumpTo(0);
+                          widget.panelController.animatePanelToSnapPoint();
                           String instructionMarkdown = await httpConnector
                               .getInstructionMarkdown(instructionMetadata.id);
                           context.read<Instruction>().setInstructionMetadata(
@@ -191,20 +189,21 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     );
   }
 
-  Future<void> centerMap(mapController,
-      [InstructionMetadata? instructionMetadata]) async {
+  Future<void> centerMap(mapController) async {
     if (await Permission.locationWhenInUse.request().isDenied) {
       exit(0);
     }
-    if (instructionMetadata != null) {
-      final latLng = LatLng(
-          widget.instructionMetadata!.lat, widget.instructionMetadata!.lon);
+    InstructionMetadata? instructionMetadata =
+        context.read<Instruction>().instructionMetadata;
+    bool firstLoad = context.read<Instruction>().firstLoad;
+    if (instructionMetadata != null && firstLoad) {
+      context.read<Instruction>().firstLoad = false;
+      final latLng = LatLng(instructionMetadata.lat, instructionMetadata.lon);
       _animatedMapMove(latLng, 15.0, 0);
       setState(() {
         _latLng = latLng;
         _rotation = _mapController.rotation;
         _materialName = instructionMetadata.materialName;
-        widget.instructionMetadata = null;
       });
     } else {
       final Location location = Location();
