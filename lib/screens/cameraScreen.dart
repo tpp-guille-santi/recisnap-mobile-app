@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 import '../entities/instructionMetadata.dart';
 import '../providers/imageProvider.dart';
@@ -16,10 +16,12 @@ import '../utils/neuralNetworkConnector.dart';
 class CameraScreen extends StatefulWidget {
   CameraScreen(
       {required this.panelController,
+      required this.scrollController,
       required this.cameraController,
       required this.cnnConnector});
 
   final PanelController panelController;
+  final ScrollController scrollController;
   final NeuralNetworkConnector cnnConnector;
   final CameraController cameraController;
 
@@ -105,6 +107,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 isLoading = false;
               });
               widget.panelController.animatePanelToSnapPoint();
+              widget.scrollController.jumpTo(0);
             } catch (e) {
               print(e);
             }

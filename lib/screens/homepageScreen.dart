@@ -8,7 +8,7 @@ import 'package:recyclingapp/entities/instructionMetadata.dart';
 import 'package:recyclingapp/screens/cameraScreen.dart';
 import 'package:recyclingapp/screens/informationScreen.dart';
 import 'package:recyclingapp/screens/mapScreen.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
 import '../utils/neuralNetworkConnector.dart';
 import '../widgets/instructionContent.dart';
@@ -20,6 +20,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  final ScrollController scrollController = ScrollController();
   final PanelController panelController = PanelController();
 
   late CameraController cameraController;
@@ -35,7 +36,10 @@ class _HomepageState extends State<Homepage> {
     screens = [
       InformationScreen(),
       LoadingScreen(),
-      MapScreen(panelController: panelController),
+      MapScreen(
+        panelController: panelController,
+        scrollController: scrollController,
+      ),
     ];
     initialize();
   }
@@ -51,9 +55,11 @@ class _HomepageState extends State<Homepage> {
       index = 2;
       screens[2] = MapScreen(
           panelController: panelController,
+          scrollController: scrollController,
           instructionMetadata: instructionMetadata);
     });
     panelController.animatePanelToSnapPoint();
+    scrollController.jumpTo(0);
   }
 
   @override
@@ -66,8 +72,9 @@ class _HomepageState extends State<Homepage> {
         snapPoint: 0.25,
         borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-        panelBuilder: (sc) => instructionContent(
-            sc, context, panelController, _onSwitchToMapScreen),
+        panelBuilder: () => instructionContent(
+            scrollController, context, panelController, _onSwitchToMapScreen),
+        scrollController: scrollController,
         body: Scaffold(
           body: screens[index],
           bottomNavigationBar: NavigationBar(
@@ -125,10 +132,14 @@ class _HomepageState extends State<Homepage> {
         InformationScreen(),
         CameraScreen(
           panelController: panelController,
+          scrollController: scrollController,
           cameraController: cameraController,
           cnnConnector: cnnConnector,
         ),
-        MapScreen(panelController: panelController),
+        MapScreen(
+          panelController: panelController,
+          scrollController: scrollController,
+        ),
       ];
     });
   }
