@@ -38,15 +38,10 @@ class _CameraScreenState extends State<CameraScreen>
   final HttpConnector httpConnector = HttpConnector();
   bool isLoading = false;
 
-  String? imagePath;
-
   Future<void> _onTap(TapUpDetails details) async {
     if (!isLoading && widget.cameraController.value.isInitialized) {
       // Remove widget and hide instructions on tap functionality
       context.read<ImagePath>().resetImagePath();
-      setState(() {
-        imagePath = null;
-      });
       if (widget.panelController.isAttached) {
         widget.panelController.close();
       }
@@ -97,6 +92,7 @@ class _CameraScreenState extends State<CameraScreen>
     final scale = 1 /
         (widget.cameraController.value.aspectRatio *
             MediaQuery.of(context).size.aspectRatio);
+    String? imagePath = context.watch<ImagePath>().imagePath;
     return Scaffold(
         body: GestureDetector(
             onTapUp: _onTap,
@@ -131,7 +127,7 @@ class _CameraScreenState extends State<CameraScreen>
                 if (imagePath != null)
                   Center(
                     child: Image.file(
-                      File(imagePath!),
+                      File(imagePath),
                       width: double.infinity,
                       height: double.infinity,
                       fit: BoxFit.cover,
@@ -152,7 +148,6 @@ class _CameraScreenState extends State<CameraScreen>
               final image = await widget.cameraController.takePicture();
               setState(() {
                 isLoading = true;
-                imagePath = image.path;
               });
               context.read<ImagePath>().setImagePath(image.path);
               final material = widget.cnnConnector.cataloguePicture(image.path);

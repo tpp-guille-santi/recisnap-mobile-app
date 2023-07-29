@@ -12,9 +12,6 @@ import '../screens/feedbackScreen.dart';
 
 void navigateToFeedbackScreen(
     BuildContext context, PanelController? panelController) {
-  if (panelController != null && panelController.isAttached) {
-    panelController.close();
-  }
   Navigator.push(
       context,
       MaterialPageRoute(
@@ -32,6 +29,7 @@ void sendFeedback(BuildContext context, PanelController? panelController,
   if (panelController != null && panelController.isAttached) {
     panelController.close();
   }
+  context.read<ImagePath>().resetImagePath();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: const Text(SENT_FEEDBACK_SUCCESSFULLY),
