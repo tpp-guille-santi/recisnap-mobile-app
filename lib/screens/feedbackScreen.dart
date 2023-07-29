@@ -30,11 +30,12 @@ class _MyFormWidgetState extends State<MyFormWidget> {
     setMaterials();
   }
 
-  void _submitForm(context, String? imagePath) async {
+  void _submitForm(BuildContext context, String? imagePath) async {
     if (imagePath != null) {
       ImageManager imageManager = new ImageManager();
       imageManager.saveNewImageWithMetadata(
           imagePath, _selectedValue!, widget.inputController.getTags);
+      context.read<ImagePath>().resetImagePath();
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
