@@ -73,7 +73,7 @@ class HttpConnector {
   }
 
   getMaterialsList() async {
-    var url = '$BACKEND_URL/materials/';
+    var url = '$BACKEND_URL/materials/?enabled=true';
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       var body = response.body;
@@ -81,19 +81,6 @@ class HttpConnector {
           .decode(body)
           .map((materials) => RecyclableMaterial.fromJson(materials)));
       return materials;
-    } else {
-      print(response.statusCode);
-    }
-  }
-
-  getMaterials() async {
-    var url = '$BACKEND_URL/materials/';
-    http.Response response = await http.get(
-      Uri.https(url),
-    );
-    if (response.statusCode == 200) {
-      String data = response.body;
-      return data;
     } else {
       print(response.statusCode);
     }
