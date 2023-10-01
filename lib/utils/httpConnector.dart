@@ -120,7 +120,7 @@ class HttpConnector {
     }
   }
 
-  searchInstruction(material, lat, lon) async {
+  Future<InstructionMetadata?> searchInstruction(material, lat, lon) async {
     var url = '$BACKEND_URL/instructions/search/';
     Map data = {
       "material_name": material,
@@ -133,6 +133,9 @@ class HttpConnector {
         body: json.encode(data), headers: headers);
     if (response.statusCode == 200) {
       var body = response.body;
+      if (json.decode(body).isEmpty) {
+        return null;
+      }
       InstructionMetadata instruction = List<InstructionMetadata>.from(json
           .decode(body)
           .map((instruction) => InstructionMetadata.fromJson(instruction)))[0];

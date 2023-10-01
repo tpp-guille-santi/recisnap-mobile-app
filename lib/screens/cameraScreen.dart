@@ -8,6 +8,7 @@ import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
+import '../consts.dart';
 import '../entities/instructionMetadata.dart';
 import '../providers/imageProvider.dart';
 import '../providers/instructionProvider.dart';
@@ -153,21 +154,30 @@ class _CameraScreenState extends State<CameraScreen>
               final material = widget.cnnConnector.cataloguePicture(image.path);
               final location = Location();
               final locationData = await location.getLocation();
-              InstructionMetadata instructionMetadata =
+              InstructionMetadata? instructionMetadata =
                   await httpConnector.searchInstruction(
                 material,
                 locationData.latitude,
                 locationData.longitude,
               );
-              String instructionMarkdown = await httpConnector
-                  .getInstructionMarkdown(instructionMetadata.id);
               context.read<Instruction>().resetInstruction();
-              context
-                  .read<Instruction>()
-                  .setInstructionMetadata(instructionMetadata, true);
-              context
-                  .read<Instruction>()
-                  .setInstructionMarkdown(instructionMarkdown);
+              if (instructionMetadata != null) {
+                String instructionMarkdown = await httpConnector
+                    .getInstructionMarkdown(instructionMetadata.id);
+                context.read<Instruction>().setInstructionMetadata(
+                    instructionMetadata, material, true);
+                context
+                    .read<Instruction>()
+                    .setInstructionMarkdown(instructionMarkdown);
+              } else {
+                context
+                    .read<Instruction>()
+                    .setInstructionMetadata(null, material, false);
+                context
+                    .read<Instruction>()
+                    .setInstructionMarkdown(NO_INSTRUCTIONS);
+              }
+
               setState(() {
                 isLoading = false;
               });

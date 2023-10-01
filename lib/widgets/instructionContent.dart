@@ -47,6 +47,9 @@ Widget instructionContent(
     OnScreenChangeCallback onScreenChange) {
   InstructionMetadata? instructionMetadata =
       context.watch<Instruction>().instructionMetadata;
+  String? instructionMaterialName =
+      context.watch<Instruction>().instructionMaterialName;
+
   bool fromPrediction = context.watch<Instruction>().fromPrediction;
   String? imagePath = context.watch<ImagePath>().imagePath;
   return MediaQuery.removePadding(
@@ -78,7 +81,9 @@ Widget instructionContent(
             children: <Widget>[
               Text(
                 instructionMetadata == null
-                    ? ''
+                    ? instructionMaterialName == null
+                        ? ''
+                        : 'Material $instructionMaterialName'
                     : 'Material ${instructionMetadata.materialName}',
                 style: TextStyle(
                   fontWeight: FontWeight.normal,

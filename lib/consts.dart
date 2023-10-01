@@ -15,6 +15,8 @@ const String PAPER_INFORMATION = '';
 const String METAL_INFORMATION = '';
 const String WASTE_INFORMATION = '';
 const String LOADING_MESSAGE = 'Cargando...';
+const String NO_INSTRUCTIONS =
+    'No se encontraron instrucciones para el material';
 const String SENT_FEEDBACK_SUCCESSFULLY = 'Ya mandamos tu feedback!';
 
 const String BACKEND_URL = 'https://recisnap-1-y9816629.deta.app';
