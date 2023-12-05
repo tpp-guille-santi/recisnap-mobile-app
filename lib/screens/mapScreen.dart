@@ -119,7 +119,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                           String instructionMarkdown = await httpConnector
                               .getInstructionMarkdown(instructionMetadata.id);
                           context.read<Instruction>().setInstructionMetadata(
-                              instructionMetadata, false);
+                              instructionMetadata,
+                              instructionMetadata.materialName,
+                              false);
                           context
                               .read<Instruction>()
                               .setInstructionMarkdown(instructionMarkdown);
